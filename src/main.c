@@ -5,8 +5,9 @@
 void setup() {
   // initscr();
   // refresh();
-  
+
   loadFile();
+  printTaskTable();
 }
 
 void loop() {
