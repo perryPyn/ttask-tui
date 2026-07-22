@@ -6,8 +6,8 @@ void setup() {
   // initscr();
   // refresh();
 
-  loadFile();
-  printTaskTable();
+  int taskLength = loadFile();
+  printTaskTable(taskLength);
 }
 
 void loop() {

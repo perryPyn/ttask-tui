@@ -1,7 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-void loadFile(void);
-void printTaskTable();
+int loadFile(void);
+void printTaskTable(int taskLength);
 
 #endif // !FILE_H

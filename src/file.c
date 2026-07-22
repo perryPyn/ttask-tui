@@ -2,10 +2,11 @@
 #include "task.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 task taskTable[TABLE_LENGTH];
 
-void loadFile() {
+int loadFile() {
   FILE *fptr;
 
   fptr = fopen("file.txt", "r");
@@ -17,21 +18,31 @@ void loadFile() {
 
   int tableIndex = 0;
   printf("INFO: Printing lines read :\n");
+  char line[256];
+
   while (tableIndex < TABLE_LENGTH &&
-         fgets(taskTable[tableIndex].title, sizeof(taskTable[tableIndex].title),
-               fptr) != NULL) {
-    printf("%s", taskTable[tableIndex].title);
+         fgets(line, sizeof(taskTable[tableIndex].title), fptr) != NULL) {
+
+    printf("%s", line);
+    taskTable[tableIndex].isDone = line[3] == 'x';
+    strncpy(taskTable[tableIndex].title, &line[6], TITLE_LENGTH);
+    taskTable[tableIndex].title[strcspn(taskTable[tableIndex].title, "\r\n")] =
+        '\0';
 
     tableIndex++;
   }
 
   fclose(fptr);
-  printf("INFO: The file is now closed\n");
+  printf("INFO: The file is now closed, read %d lines\n", tableIndex);
+  return tableIndex;
 }
 
-void printTaskTable() {
+void printTaskTable(int taskLength) {
   printf("INFO: Printing taskTable :\n");
-  for (int i = 0; i < 2; i++) {
-    printf("%s", taskTable[i].title);
+  for (int i = 0; i < taskLength; i++) {
+    printf("[%i]", taskTable[i].isDone);
+    printf(" | ");
+    printf("[%s]", taskTable[i].title);
+    printf("\r\n");
   }
 }
