@@ -1,6 +1,7 @@
 #include "main.h"
 #include "file.h"
 #include <ncurses.h>
+#include <stdlib.h>
 
 void setup() {
   // initscr();
@@ -8,6 +9,9 @@ void setup() {
 
   int taskLength = loadFile();
   printTaskTable(taskLength);
+  writeFile(taskLength);
+
+  exit(0);
 }
 
 void loop() {

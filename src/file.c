@@ -1,5 +1,4 @@
 #include "file.h"
-#include "task.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +34,23 @@ int loadFile() {
   fclose(fptr);
   printf("INFO: The file is now closed, read %d lines\n", tableIndex);
   return tableIndex;
+}
+
+void writeFile(int taskLength) {
+  FILE *fptr;
+
+  fptr = fopen("file.txt", "w");
+  if (fptr == NULL) {
+    printf("CRITICAL: file.txt file failed to open.\n");
+    exit(0);
+  }
+  printf("INFO: The file is ready for rewriting.\n");
+
+  for (int i = 0; i < taskLength; i++) {
+    fprintf(fptr, "- [%c] %s\n", taskTable[i].isDone ? 'x' : ' ', taskTable[i].title);
+  }
+  fclose(fptr);
+  printf("INFO: Closing rewritten file.");
 }
 
 void printTaskTable(int taskLength) {
