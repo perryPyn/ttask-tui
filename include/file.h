@@ -1,17 +1,10 @@
 #ifndef FILE_H
 #define FILE_H
 
-#define TITLE_LENGTH 128
-#define TABLE_LENGTH 256
+#include "task.h"
 
-typedef struct {
-  int isDone;
-  char title[TITLE_LENGTH];
-  // char description[512];
-} task;
-
-int loadFile(void);
-void printTaskTable(int taskLength);
-void writeFile(int taskLength);
+int loadFile(task taskTable[TABLE_LENGTH]);
+void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength);
+void writeFile(task taskTable[TABLE_LENGTH], int taskLength);
 
 #endif // !FILE_H

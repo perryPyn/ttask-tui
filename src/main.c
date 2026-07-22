@@ -1,17 +1,12 @@
 #include "main.h"
 #include "file.h"
+#include "task.h"
 #include <ncurses.h>
 #include <stdlib.h>
 
 void setup() {
   // initscr();
   // refresh();
-
-  int taskLength = loadFile();
-  printTaskTable(taskLength);
-  writeFile(taskLength);
-
-  exit(0);
 }
 
 void loop() {
@@ -31,7 +26,17 @@ void testColor() {
 }
 
 int main() {
+  task taskTable[TABLE_LENGTH] = {0};
   setup();
+
+  int taskLength = loadFile(taskTable);
+  printTaskTable(taskTable, taskLength);
+
+  toggleTaskStatus(taskTable, 1);
+  toggleTaskStatus(taskTable, 3);
+
+  writeFile(taskTable, taskLength);
+  exit(0);
 
   while (1) {
     loop();

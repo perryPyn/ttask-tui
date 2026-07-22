@@ -3,9 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-task taskTable[TABLE_LENGTH];
-
-int loadFile() {
+int loadFile(task taskTable[TABLE_LENGTH]) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "r");
@@ -36,7 +34,7 @@ int loadFile() {
   return tableIndex;
 }
 
-void writeFile(int taskLength) {
+void writeFile(task taskTable[TABLE_LENGTH], int taskLength) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "w");
@@ -53,7 +51,7 @@ void writeFile(int taskLength) {
   printf("INFO: Closing rewritten file.");
 }
 
-void printTaskTable(int taskLength) {
+void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength) {
   printf("INFO: Printing taskTable :\n");
   for (int i = 0; i < taskLength; i++) {
     printf("[%i]", taskTable[i].isDone);
