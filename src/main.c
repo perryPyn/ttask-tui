@@ -1,20 +1,46 @@
 #include "main.h"
 #include "file.h"
+#include "log.h"
 #include "task.h"
+#include "ui.h"
 #include <ncurses.h>
-#include <stdlib.h>
 
-void setup() {
-  // initscr();
-  // refresh();
+void setup(AppState *app) {
+  initUI();
+
+  app->taskLength = loadFile(app->taskTable);
+  app->isRunning = true;
+  app->cursorLine = 0;
+
+  printTaskTable(app->taskTable, app->taskLength);
+
+  refresh();
 }
 
-void loop() {
-  // int ch = getch();
-  // if (ch == 'q') {
-  //   endwin();
-  //   stopFile();
-  // }
+int loop(AppState *app) {
+  clear();
+  displayTaskTable(app->taskTable, app->taskLength, app->cursorLine);
+  refresh();
+
+  int ch = getch();
+
+  if (ch == 'q') {
+    app->isRunning = false;
+    return 0;
+  }
+
+  if (ch == 'j') {
+    app->cursorLine += 1;
+  }
+  if (ch == 'k') {
+    app->cursorLine -= 1;
+  }
+
+  if (ch == ' ' || ch == '\n') {
+    toggleTaskStatus(app->taskTable, app->cursorLine);
+  }
+
+  return 1;
 }
 
 void testColor() {
@@ -25,22 +51,21 @@ void testColor() {
   // attroff(COLOR_PAIR(1));
 }
 
+void cleanup(AppState *app) {
+  msgLog("[INFO] Saving file and stopping process...\n");
+  writeFile(app->taskTable, app->taskLength);
+  endwin();
+}
+
 int main() {
-  task taskTable[TABLE_LENGTH] = {0};
-  setup();
+  AppState app = {0};
 
-  int taskLength = loadFile(taskTable);
-  printTaskTable(taskTable, taskLength);
+  setup(&app);
 
-  toggleTaskStatus(taskTable, 1);
-  toggleTaskStatus(taskTable, 3);
-
-  writeFile(taskTable, taskLength);
-  exit(0);
-
-  while (1) {
-    loop();
+  while (app.isRunning && loop(&app)) {
   }
+
+  cleanup(&app);
 
   return 0;
 }
