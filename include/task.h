@@ -11,5 +11,6 @@ typedef struct {
 } task;
 
 void toggleTaskStatus(task taskTable[TABLE_LENGTH], int lineNumber);
+void addTask(task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength);
 
 #endif // !TASK_H

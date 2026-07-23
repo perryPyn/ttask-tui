@@ -24,31 +24,26 @@ int loop(AppState *app) {
 
   int ch = getch();
 
-  if (ch == 'q') {
+  switch (ch) {
+  case 'q':
     app->isRunning = false;
     return 0;
-  }
 
-  if (ch == 'j') {
+  case 'j':
     app->cursorLine += 1;
-  }
-  if (ch == 'k') {
+    break;
+  case 'k':
     app->cursorLine -= 1;
-  }
-
-  if (ch == ' ' || ch == '\n') {
+    break;
+  case ' ':
     toggleTaskStatus(app->taskTable, app->cursorLine);
+    break;
+  case 'a':
+    addTask(app->taskTable, app->taskLength, &app->taskLength);
+    break;
   }
 
   return 1;
-}
-
-void testColor() {
-  start_color();
-
-  // init_pair(1, COLOR_BLACK, COLOR_RED); // Paire 1 : Texte rouge sur fond
-  // noir attron(COLOR_PAIR(1)); printw("Texte en rouge");
-  // attroff(COLOR_PAIR(1));
 }
 
 void cleanup(AppState *app) {
