@@ -1,5 +1,6 @@
 #include "ui.h"
 #include "log.h"
+#include "task.h"
 #include <locale.h>
 #include <ncurses.h>
 
@@ -12,7 +13,7 @@ void initUI(void) {
   curs_set(0);
 }
 
-void strik
+void strikoutLine(char *title[TITLE_LENGTH]) { return; }
 
 void displayTaskTable(task taskTable[TABLE_LENGTH], int taskLength,
                       int cursorLine) {
