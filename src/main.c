@@ -91,6 +91,10 @@ Node *createNode(Task task) {
 }
 
 void addNode(Node *previous, Node *node, Node *next) {
+  if (node == NULL) {
+    return;
+  }
+
   node->previous = previous;
   node->next = next;
 
@@ -104,29 +108,62 @@ void addNode(Node *previous, Node *node, Node *next) {
   }
 }
 
+void addNodeAtIndex(Task task, Node *head, int index) {
+  // Creation of the new node
+  Node *node = createNode(task);
+
+  // Looking for the spot for the new node
+  Node *nodeAtIndex = head;
+  for (int i = 0; i < index; i++) {
+    if (nodeAtIndex->next == NULL) {
+      break;
+    }
+    nodeAtIndex = nodeAtIndex->next;
+  }
+
+  // Insert new node
+  addNode(nodeAtIndex, node, nodeAtIndex->next);
+}
+
+void removeNode(Node *node) {
+  if (node == NULL) {
+    return;
+  }
+
+  // If placed at the top
+  if (node->next != NULL) {
+    node->next->previous = node->previous;
+  }
+  // If placed at the bottom
+  if (node->previous != NULL) {
+    node->previous->next = node->next;
+  }
+  free(node);
+}
+
+void printNodes(Node *head) {
+  Node *temp = head;
+  msgLog("[INFO] Printing Node table :\n   ");
+  while (temp != NULL) {
+    msgLog("%s -> ", temp->task.title);
+    temp = temp->next;
+  }
+  msgLog("NULL\n");
+}
+
 int main() {
 
-  Node *head = createNode((Task){0, "n1"});
-  Node *second = createNode((Task){0, "n2"});
-  Node *third = createNode((Task){0, "n3"});
+  Node *head = createNode((Task){0, "Head"});
+  printNodes(head);
 
-  addNode(head, third, NULL);
+  addNodeAtIndex((Task){0, "n2"}, head, 2);
+  addNodeAtIndex((Task){0, "n4"}, head, 4);
+  addNodeAtIndex((Task){0, "n5"}, head, 5);
+  printNodes(head);
 
-  Node *temp = head;
-  while (temp != NULL) {
-    printf("%s -> ", temp->task.title);
-    temp = temp->next;
-  }
-  printf("NULL\n");
-
-  addNode(head, second, third);
-
-  temp = head;
-  while (temp != NULL) {
-    printf("%s -> ", temp->task.title);
-    temp = temp->next;
-  }
-  printf("NULL\n");
+  addNodeAtIndex((Task){0, "n1"}, head, 0);
+  addNodeAtIndex((Task){0, "n3"}, head, 2);
+  printNodes(head);
 
   return 0;
 }
