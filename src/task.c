@@ -1,4 +1,5 @@
 #include "task.h"
+#include <ncurses.h>
 #include <string.h>
 
 void toggleTaskStatus(task taskTable[TABLE_LENGTH], int lineNumber) {
@@ -6,8 +7,21 @@ void toggleTaskStatus(task taskTable[TABLE_LENGTH], int lineNumber) {
 }
 
 void addTask(task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength) {
+  char title[TITLE_LENGTH];
+  int isTypingTitle = 1;
+
+  echo();
+  while (isTypingTitle) {
+    getstr(title);
+    int ch = getch();
+    if (ch == '\n') {
+      isTypingTitle = 0;
+    }
+  }
+  noecho();
+
   taskTable[lineNumber].isDone = 0;
-  strcpy(taskTable[lineNumber].title, "dummy title");
+  strcpy(taskTable[lineNumber].title, title);
 
   // add way to enter title :
   // echo();               // Réactive l'affichage le temps de la saisie

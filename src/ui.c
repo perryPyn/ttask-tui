@@ -1,8 +1,10 @@
 #include "ui.h"
 #include "log.h"
+#include <locale.h>
 #include <ncurses.h>
 
 void initUI(void) {
+  setlocale(LC_ALL, "");
   initscr();
   cbreak();
   noecho();
@@ -10,12 +12,22 @@ void initUI(void) {
   curs_set(0);
 }
 
-void displayTaskTable(task taskTable[TABLE_LENGTH], int taskLength, int cursorLine) {
+void strik
+
+void displayTaskTable(task taskTable[TABLE_LENGTH], int taskLength,
+                      int cursorLine) {
   for (int i = 0; i < taskLength; i++) {
-    if(i==cursorLine) {
-      attron(A_REVERSE);
+    if (i == cursorLine) {
+      attron(A_STANDOUT);
     }
-    printw("- [%c] %s\n", taskTable[i].isDone ? 'x' : ' ', taskTable[i].title);
-    attroff(A_REVERSE);
+
+    char *bulletPoints = "□";
+    if (taskTable[i].isDone == 1) {
+      attron(A_DIM | A_ITALIC);
+      bulletPoints = "▣";
+    }
+
+    printw("%s %s\u0336\n", bulletPoints, taskTable[i].title);
+    attroff(A_STANDOUT | A_DIM | A_ITALIC);
   }
 }

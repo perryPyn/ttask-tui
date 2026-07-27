@@ -3,6 +3,7 @@
 #include "log.h"
 #include "task.h"
 #include "ui.h"
+#define _XOPEN_SOURCE_EXTENDED 1
 #include <ncurses.h>
 
 void setup(AppState *app) {
@@ -25,25 +26,25 @@ int loop(AppState *app) {
   int ch = getch();
 
   switch (ch) {
-  case 'q':
-    app->isRunning = false;
-    return 0;
+    case 'q':
+      app->isRunning = false;
+      return 0;
 
-  case 'j':
-    app->cursorLine += 1;
-    break;
-  case 'k':
-    app->cursorLine -= 1;
-    break;
-  case ' ':
-    toggleTaskStatus(app->taskTable, app->cursorLine);
-    break;
-  case 'a':
-    addTask(app->taskTable, app->taskLength, &app->taskLength);
-    break;
-  }
+    case 'j':
+      app->cursorLine += 1;
+      break;
+    case 'k':
+      app->cursorLine -= 1;
+      break;
+    case ' ':
+      toggleTaskStatus(app->taskTable, app->cursorLine);
+      break;
+    case 'a':
+      addTask(app->taskTable, app->taskLength, &app->taskLength);
+      break;
+    }
 
-  return 1;
+    return 1;
 }
 
 void cleanup(AppState *app) {
