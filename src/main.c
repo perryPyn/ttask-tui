@@ -5,6 +5,8 @@
 #include "ui.h"
 #define _XOPEN_SOURCE_EXTENDED 1
 #include <ncurses.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 // void setup(AppState *app) {
 //   initUI();
@@ -66,33 +68,60 @@
 //   return 0;
 // }
 
-struct Node {
-  task task;
+typedef struct Node {
+  Task task;
   struct Node *next;
-};
+  struct Node *previous;
+} Node;
+
+Node *createNode(Task task) {
+  Node *node = NULL;
+  node = (Node *)malloc(sizeof(Node));
+
+  if (!node) {
+    msgLog("[CRIT] Memory allocation failed\n");
+    return NULL;
+  }
+
+  node->task = task;
+  node->previous = NULL;
+  node->next = NULL;
+
+  return node;
+}
+
+void addNode(Node *previous, Node *node, Node *next) {
+  node->previous = previous;
+  node->next = next;
+
+  // If placed at the top
+  if (next != NULL) {
+    next->previous = node;
+  }
+  // If placed at the bottom
+  if (previous != NULL) {
+    previous->next = node;
+  }
+}
 
 int main() {
 
-  struct Node n1;
-  struct Node n2;
-  struct Node n3;
+  Node *head = createNode((Task){0, "n1"});
+  Node *second = createNode((Task){0, "n2"});
+  Node *third = createNode((Task){0, "n3"});
 
-  struct Node *head = &n1;
-  struct Node *second = &n2;
-  struct Node *third = &n3;
+  addNode(head, third, NULL);
 
-  // Assign data and link nodes
-  head->task = (task){0, "n1"};
-  head->next = second;
+  Node *temp = head;
+  while (temp != NULL) {
+    printf("%s -> ", temp->task.title);
+    temp = temp->next;
+  }
+  printf("NULL\n");
 
-  second->task = (task){0, "n2"};
-  second->next = third;
+  addNode(head, second, third);
 
-  third->task = (task){0, "n3"};
-  third->next = NULL;
-
-  // Print linked list
-  struct Node *temp = head;
+  temp = head;
   while (temp != NULL) {
     printf("%s -> ", temp->task.title);
     temp = temp->next;

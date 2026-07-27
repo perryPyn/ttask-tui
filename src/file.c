@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int loadFile(task taskTable[TABLE_LENGTH]) {
+int loadFile(Task taskTable[TABLE_LENGTH]) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "r");
@@ -35,7 +35,7 @@ int loadFile(task taskTable[TABLE_LENGTH]) {
   return tableIndex;
 }
 
-void writeFile(task taskTable[TABLE_LENGTH], int taskLength) {
+void writeFile(Task taskTable[TABLE_LENGTH], int taskLength) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "w");
@@ -53,7 +53,7 @@ void writeFile(task taskTable[TABLE_LENGTH], int taskLength) {
   msgLog("[INFO] Closing rewritten file.\n");
 }
 
-void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength) {
+void printTaskTable(Task taskTable[TABLE_LENGTH], int taskLength) {
   msgLog("[INFO] Printing taskTable :\n");
   for (int i = 0; i < taskLength; i++) {
     msgLog("[%i]", taskTable[i].isDone);

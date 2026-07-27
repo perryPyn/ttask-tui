@@ -15,7 +15,7 @@ void initUI(void) {
 
 void strikoutLine(char *title[TITLE_LENGTH]) { return; }
 
-void displayTaskTable(task taskTable[TABLE_LENGTH], int taskLength,
+void displayTaskTable(Task taskTable[TABLE_LENGTH], int taskLength,
                       int cursorLine) {
   for (int i = 0; i < taskLength; i++) {
     if (i == cursorLine) {

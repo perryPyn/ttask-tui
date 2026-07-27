@@ -4,7 +4,7 @@
 #include "task.h"
 
 typedef struct {
-  task taskTable[TABLE_LENGTH];
+  Task taskTable[TABLE_LENGTH];
   int taskLength;
   int isRunning;
   int cursorLine;

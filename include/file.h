@@ -3,8 +3,8 @@
 
 #include "task.h"
 
-int loadFile(task taskTable[TABLE_LENGTH]);
-void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength);
-void writeFile(task taskTable[TABLE_LENGTH], int taskLength);
+int loadFile(Task taskTable[TABLE_LENGTH]);
+void printTaskTable(Task taskTable[TABLE_LENGTH], int taskLength);
+void writeFile(Task taskTable[TABLE_LENGTH], int taskLength);
 
 #endif // !FILE_H

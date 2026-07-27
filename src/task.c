@@ -2,11 +2,11 @@
 #include <ncurses.h>
 #include <string.h>
 
-void toggleTaskStatus(task taskTable[TABLE_LENGTH], int lineNumber) {
+void toggleTaskStatus(Task taskTable[TABLE_LENGTH], int lineNumber) {
   taskTable[lineNumber].isDone = taskTable[lineNumber].isDone == 0;
 }
 
-void addTask(task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength) {
+void addTask(Task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength) {
   char title[TITLE_LENGTH];
   int isTypingTitle = 1;
 
