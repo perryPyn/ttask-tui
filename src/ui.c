@@ -28,7 +28,7 @@ void displayTaskTable(task taskTable[TABLE_LENGTH], int taskLength,
       bulletPoints = "▣";
     }
 
-    printw("%s %s\u0336\n", bulletPoints, taskTable[i].title);
+    printw("%s %s\n", bulletPoints, taskTable[i].title);
     attroff(A_STANDOUT | A_DIM | A_ITALIC);
   }
 }
