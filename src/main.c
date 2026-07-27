@@ -108,6 +108,22 @@ void addNode(Node *previous, Node *node, Node *next) {
   }
 }
 
+void removeNode(Node *node) {
+  if (node == NULL) {
+    return;
+  }
+
+  // If placed at the top
+  if (node->next != NULL) {
+    node->next->previous = node->previous;
+  }
+  // If placed at the bottom
+  if (node->previous != NULL) {
+    node->previous->next = node->next;
+  }
+  free(node);
+}
+
 void addNodeAtIndex(Task task, Node *head, int index) {
   // Creation of the new node
   Node *node = createNode(task);
@@ -125,20 +141,17 @@ void addNodeAtIndex(Task task, Node *head, int index) {
   addNode(nodeAtIndex, node, nodeAtIndex->next);
 }
 
-void removeNode(Node *node) {
-  if (node == NULL) {
-    return;
+void removeNodeAtIndex(Node *head, int index) {
+
+  Node *nodeAtIndex = head;
+  for (int i = 0; i < index; i++) {
+    if (nodeAtIndex->next == NULL) {
+      break;
+    }
+    nodeAtIndex = nodeAtIndex->next;
   }
 
-  // If placed at the top
-  if (node->next != NULL) {
-    node->next->previous = node->previous;
-  }
-  // If placed at the bottom
-  if (node->previous != NULL) {
-    node->previous->next = node->next;
-  }
-  free(node);
+  removeNode(nodeAtIndex);
 }
 
 void printNodes(Node *head) {
@@ -163,6 +176,9 @@ int main() {
 
   addNodeAtIndex((Task){0, "n1"}, head, 0);
   addNodeAtIndex((Task){0, "n3"}, head, 2);
+  printNodes(head);
+
+  removeNodeAtIndex(head, 2);
   printNodes(head);
 
   return 0;
