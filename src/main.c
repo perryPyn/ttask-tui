@@ -59,7 +59,7 @@ void loop(AppState *app) {
     // Creating the node
     Task task = {0, ""};
     cpyStr(task.title, title);
-    addNodeAtIndex(&task, app->head, app->cursorLine);
+    addNode(&task, app->currentNode);
 
     app->taskLength += 1;
 

@@ -1,5 +1,6 @@
 #include "node.h"
 #include "log.h"
+#include "task.h"
 #include <stdlib.h>
 
 Node *createNode(Task *task) {
@@ -18,21 +19,20 @@ Node *createNode(Task *task) {
   return node;
 }
 
-void addNode(Node *previous, Node *node, Node *next) {
-  if (node == NULL) {
-    return;
-  }
+void addNode(Task *task, Node *nodeToTarget) {
+  // Creation of the new node
+  Node *node = createNode(task);
 
-  node->previous = previous;
-  node->next = next;
+  node->previous = nodeToTarget;
+  node->next = nodeToTarget->next;
 
   // If placed at the top
-  if (next != NULL) {
-    next->previous = node;
+  if (nodeToTarget->next != NULL) {
+    nodeToTarget->next->previous = node;
   }
   // If placed at the bottom
-  if (previous != NULL) {
-    previous->next = node;
+  if (nodeToTarget != NULL) {
+    nodeToTarget->next = node;
   }
 }
 
@@ -53,9 +53,6 @@ void removeNode(Node *node) {
 }
 
 void addNodeAtIndex(Task *task, Node *head, int index) {
-  // Creation of the new node
-  Node *node = createNode(task);
-
   // Looking for the spot for the new node
   Node *nodeAtIndex = head;
   for (int i = 0; i < index; i++) {
@@ -66,7 +63,7 @@ void addNodeAtIndex(Task *task, Node *head, int index) {
   }
 
   // Insert new node
-  addNode(nodeAtIndex, node, nodeAtIndex->next);
+  addNode(task, nodeAtIndex);
 }
 
 void removeNodeAtIndex(Node *head, int index) {
@@ -90,9 +87,10 @@ void printNodes(Node *head) {
     msgLog("%s -> ", node->task.title);
   }
   msgLog("NULL\n");
-  msgLog("[INFO] End of nodes");
+  msgLog("[INFO] End of nodes\n");
 }
 
 void toggleTaskStatus(Node *node, int lineNumber) {
   node->task.isDone = node->task.isDone == 0;
 }
+

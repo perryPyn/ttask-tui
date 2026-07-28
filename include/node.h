@@ -10,7 +10,7 @@ typedef struct Node {
 } Node;
 
 Node *createNode(Task *task);
-void addNode(Node *previous, Node *node, Node *next);
+void addNode(Task *task, Node *nodeToTarget);
 void removeNode(Node *node);
 void addNodeAtIndex(Task *task, Node *head, int index);
 void removeNodeAtIndex(Node *head, int index);
