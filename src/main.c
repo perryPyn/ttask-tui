@@ -34,42 +34,22 @@ void loop(AppState *app) {
     app->isRunning = 0;
     break;
   case 'k':
-    app->cursorLine = (app->cursorLine - 1 < 0) ? 0 : app->cursorLine - 1;
-    app->currentNode = (app->currentNode->previous->previous != NULL)
-                           ? app->currentNode->previous
-                           : app->currentNode;
+    moveUp(app);
     break;
   case 'j':
-    app->cursorLine = (app->cursorLine + 1 > app->taskLength)
-                          ? app->taskLength
-                          : app->cursorLine + 1;
-    app->currentNode = (app->currentNode->next != NULL) ? app->currentNode->next
-                                                        : app->currentNode;
+    moveDown(app);
     break;
   case ' ':
     toggleTaskStatus(app->currentNode, app->cursorLine);
     break;
   case 'a':
-    echo(); // Restoring vision on the user input
-
-    char title[TITLE_LENGTH];
-    // Get user input
-    getstr(title);
-
-    // Creating the node
-    Task task = {0, ""};
-    cpyStr(task.title, title);
-    addNode(&task, app->currentNode);
-
-    app->taskLength += 1;
-
-    noecho();
+    appendTask(app);
     break;
 
-  case 'x':
-    removeNode(app->currentNode);
-    app->taskLength -= 1;
+  case 'x': {
+    removeTask(app);
     break;
+  }
   }
 }
 
