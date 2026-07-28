@@ -1,57 +1,81 @@
 #include "main.h"
 #include "file.h"
 #include "log.h"
+#include "node.h"
 #include "task.h"
 #include "ui.h"
-#include <stdio.h>
+#include "utils.h"
 #define _XOPEN_SOURCE_EXTENDED 1
 #include <ncurses.h>
 
 void setup(AppState *app) {
   initUI();
 
-  app->head = createNode((Task){0, "Head"});
-  app->taskLength = loadFile(app->taskTable);
+  app->head = createNode(&(Task){0, "Head"});
+  app->taskLength = loadFile(app->head) - 1;
+  app->currentNode = app->head->next;
   app->isRunning = true;
   app->cursorLine = 0;
 
-  printTaskTable(app->taskTable, app->taskLength);
+  printNodes(app->head);
 
   refresh();
 }
 
-int loop(AppState *app) {
+void loop(AppState *app) {
   clear();
-  displayTaskTable(app->taskTable, app->taskLength, app->cursorLine);
+  displayNodeTable(app->head, app->taskLength, app->cursorLine);
   refresh();
 
   int ch = getch();
 
   switch (ch) {
   case 'q':
-    app->isRunning = false;
-    return 0;
-
-  case 'j':
-    app->cursorLine += 1;
+    app->isRunning = 0;
     break;
   case 'k':
-    app->cursorLine -= 1;
+    app->cursorLine = (app->cursorLine - 1 < 0) ? 0 : app->cursorLine - 1;
+    app->currentNode = (app->currentNode->previous->previous != NULL)
+                           ? app->currentNode->previous
+                           : app->currentNode;
+    break;
+  case 'j':
+    app->cursorLine = (app->cursorLine + 1 > app->taskLength)
+                          ? app->taskLength
+                          : app->cursorLine + 1;
+    app->currentNode = (app->currentNode->next != NULL) ? app->currentNode->next
+                                                        : app->currentNode;
     break;
   case ' ':
-    toggleTaskStatus(app->taskTable, app->cursorLine);
+    toggleTaskStatus(app->currentNode, app->cursorLine);
     break;
   case 'a':
-    addTask(app->taskTable, app->taskLength, &app->taskLength);
+    echo(); // Restoring vision on the user input
+
+    char title[TITLE_LENGTH];
+    // Get user input
+    getstr(title);
+
+    // Creating the node
+    Task task = {0, ""};
+    cpyStr(task.title, title);
+    addNodeAtIndex(&task, app->head, app->cursorLine);
+
+    app->taskLength += 1;
+
+    noecho();
+    break;
+
+  case 'x':
+    removeNode(app->currentNode);
+    app->taskLength -= 1;
     break;
   }
-
-  return 1;
 }
 
 void cleanup(AppState *app) {
   msgLog("[INFO] Saving file and stopping process...\n");
-  writeFile(app->taskTable, app->taskLength);
+  writeFile(app->head, app->taskLength);
   endwin();
 }
 
@@ -62,19 +86,8 @@ int main() {
 
   printNodes(app.head);
 
-  addNodeAtIndex((Task){0, "n2"}, app.head, 2);
-  addNodeAtIndex((Task){0, "n4"}, app.head, 4);
-  addNodeAtIndex((Task){0, "n5"}, app.head, 5);
-  printNodes(app.head);
-
-  addNodeAtIndex((Task){0, "n1"}, app.head, 0);
-  addNodeAtIndex((Task){0, "n3"}, app.head, 2);
-  printNodes(app.head);
-
-  removeNodeAtIndex(app.head, 2);
-  printNodes(app.head);
-
-  while (app.isRunning && loop(&app)) {
+  while (app.isRunning) {
+    loop(&app);
   }
 
   cleanup(&app);

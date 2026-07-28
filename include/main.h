@@ -4,7 +4,7 @@
 #include "app.h"
 
 void setup(AppState *app);
-int loop(AppState *app);
+void loop(AppState *app);
 void cleanup(AppState *app);
 int main(void);
 

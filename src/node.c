@@ -1,8 +1,8 @@
-#include "log.h"
 #include "node.h"
+#include "log.h"
 #include <stdlib.h>
 
-Node *createNode(Task task) {
+Node *createNode(Task *task) {
   Node *node = NULL;
   node = (Node *)malloc(sizeof(Node));
 
@@ -11,7 +11,7 @@ Node *createNode(Task task) {
     return NULL;
   }
 
-  node->task = task;
+  node->task = *task;
   node->previous = NULL;
   node->next = NULL;
 
@@ -52,7 +52,7 @@ void removeNode(Node *node) {
   free(node);
 }
 
-void addNodeAtIndex(Task task, Node *head, int index) {
+void addNodeAtIndex(Task *task, Node *head, int index) {
   // Creation of the new node
   Node *node = createNode(task);
 
@@ -83,11 +83,16 @@ void removeNodeAtIndex(Node *head, int index) {
 }
 
 void printNodes(Node *head) {
-  Node *temp = head;
-  msgLog("[INFO] Printing Node table :\n   ");
-  while (temp != NULL) {
-    msgLog("%s -> ", temp->task.title);
-    temp = temp->next;
+  Node *node = head;
+  msgLog("[INFO] Printing nodes :\n   ");
+  while (node->next != NULL) {
+    node = node->next;
+    msgLog("%s -> ", node->task.title);
   }
   msgLog("NULL\n");
+  msgLog("[INFO] End of nodes");
+}
+
+void toggleTaskStatus(Node *node, int lineNumber) {
+  node->task.isDone = node->task.isDone == 0;
 }

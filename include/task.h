@@ -10,7 +10,4 @@ typedef struct {
   // char description[512];
 } Task;
 
-void toggleTaskStatus(Task taskTable[TABLE_LENGTH], int lineNumber);
-void addTask(Task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength);
-
 #endif // !TASK_H
