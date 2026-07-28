@@ -52,8 +52,9 @@ void writeFile(Node *head, int taskLength) {
   Node *node = head;
   while (node->next != NULL) {
     node = node->next;
+    
 
-    fprintf(fptr, "- [%c] %s\n", node->task.isDone ? 'x' : ' ',
+    fprintf(fptr, "- [%c] %s\n", node->task.status ? 'x' : ' ',
             node->task.title);
   }
 
@@ -66,6 +67,6 @@ void printTaskTable(Node *head, int taskLength) {
   Node *node = head;
   while (node->next != NULL) {
     node = node->next;
-    msgLog("[%d] | [%s]\n", node->task.isDone, node->task.title);
+    msgLog("[%d] | [%s]\n", node->task.status, node->task.title);
   }
 }

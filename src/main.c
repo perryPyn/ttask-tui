@@ -41,13 +41,18 @@ void loop(AppState *app) {
     break;
   case ' ':
     toggleTaskStatus(app->currentNode, app->cursorLine);
+    writeFile(app->head, app->taskLength);
     break;
   case 'a':
     appendTask(app);
+    writeFile(app->head, app->taskLength);
     break;
-
+  case 'c':
+    app->currentNode->task.status = (app->currentNode->task.status + 1) % 4;
+    break;
   case 'x': {
     removeTask(app);
+    writeFile(app->head, app->taskLength);
     break;
   }
   }

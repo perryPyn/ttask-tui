@@ -91,6 +91,5 @@ void printNodes(Node *head) {
 }
 
 void toggleTaskStatus(Node *node, int lineNumber) {
-  node->task.isDone = node->task.isDone == 0;
+  node->task.status = (node->task.status != 0) ? 0 : 2;
 }
-
