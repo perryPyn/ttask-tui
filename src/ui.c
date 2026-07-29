@@ -72,7 +72,7 @@ void displayNodeTable(WINDOW *win, Node *head, int taskLength, int cursorLine) {
     }
 
     // Find the first parent that is marked as DONE or ON_HOLD
-    checkDimmedParents(node);
+    checkDimmedParents(win, node);
 
     wprintw(win, "%*s%s %s\n", node->task.indentation, "",
             STATUS_SYMBOLS[node->task.status], title);

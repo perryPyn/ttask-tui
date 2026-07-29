@@ -5,7 +5,6 @@
 #include "task.h"
 #include "ui.h"
 #include "utils.h"
-#define _XOPEN_SOURCE_EXTENDED 1
 #include <ncurses.h>
 
 void setup(AppState *app) {

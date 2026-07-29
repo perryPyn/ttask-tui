@@ -1,8 +1,6 @@
 #include "utils.h"
-#include "app.h"
 #include "log.h"
 #include "task.h"
-#include <ncurses.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -67,7 +65,7 @@ void moveDown(AppState *app) {
                                                       : app->currentNode;
 }
 
-void checkDimmedParents(Node *node) {
+void checkDimmedParents(WINDOW *win, Node *node) {
   if (node == NULL)
     return;
 
@@ -78,7 +76,7 @@ void checkDimmedParents(Node *node) {
     if (parentNode->task.indentation < targetIndentation) {
       if (parentNode->task.status == TASK_DONE ||
           parentNode->task.status == TASK_ON_HOLD) {
-        attron(A_DIM);
+        wattron(win, A_DIM);
         return;
       }
       targetIndentation = parentNode->task.indentation;
