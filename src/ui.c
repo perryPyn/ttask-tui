@@ -60,7 +60,11 @@ void displayNodeTable(Node *head, int taskLength, int cursorLine) {
       break;
     }
 
-    printw("%s %s\n", STATUS_SYMBOLS[node->task.status], title);
+    // Find the first parent that is marked as DONE or ON_HOLD
+    checkDimmedParents(node);
+
+    printw("%*s%s %s\n", node->task.indentation, "",
+           STATUS_SYMBOLS[node->task.status], title);
     attroff(A_STANDOUT | A_DIM | A_BOLD);
   }
 }

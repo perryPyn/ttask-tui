@@ -23,7 +23,7 @@ void appendTask(AppState *app) {
   getstr(title);
 
   // Creating the node
-  Task task = {0,0, ""};
+  Task task = {0, 0, ""};
   cpyStr(task.title, title);
   addNode(&task, app->currentNode);
 
@@ -65,4 +65,28 @@ void moveDown(AppState *app) {
                         : app->cursorLine + 1;
   app->currentNode = (app->currentNode->next != NULL) ? app->currentNode->next
                                                       : app->currentNode;
+}
+
+void checkDimmedParents(Node *node) {
+  if (node == NULL)
+    return;
+
+  int targetIndentation = node->task.indentation;
+  Node *parentNode = node->previous;
+
+  while (parentNode != NULL && parentNode->previous != NULL) {
+    if (parentNode->task.indentation < targetIndentation) {
+      if (parentNode->task.status == TASK_DONE ||
+          parentNode->task.status == TASK_ON_HOLD) {
+        attron(A_DIM);
+        return;
+      }
+      targetIndentation = parentNode->task.indentation;
+
+      if (targetIndentation == 0) {
+        break;
+      }
+    }
+    parentNode = parentNode->previous;
+  }
 }
