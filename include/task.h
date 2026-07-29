@@ -5,7 +5,7 @@
 #define TABLE_LENGTH 256
 
 typedef struct {
-  // int indentation;
+  int indentation;
   int status;
   char title[TITLE_LENGTH];
   // char description[512];

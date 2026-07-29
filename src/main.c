@@ -11,7 +11,7 @@
 void setup(AppState *app) {
   initUI();
 
-  app->head = createNode(&(Task){/*0 ,*/ 0, "Head"});
+  app->head = createNode(&(Task){0, 0, "Head"});
   app->taskLength = loadFile(app->head) - 1;
   app->currentNode = app->head->next;
   app->isRunning = true;
@@ -45,10 +45,30 @@ void loop(AppState *app) {
     break;
   case 'a':
     appendTask(app);
+    app->currentNode->task.indentation =
+        app->currentNode->previous->task.indentation;
     writeFile(app->head, app->taskLength);
+    break;
+  case 'A':
+    appendTask(app);
+    app->currentNode->task.indentation =
+        app->currentNode->previous->task.indentation + 2;
+    writeFile(app->head, app->taskLength);
+    break;
+  case '>':
+    app->currentNode->task.indentation = app->currentNode->task.indentation + 2;
+    writeFile(app->head, app->taskLength);
+    break;
+  case '<':
+    if (app->currentNode->task.indentation > 0) {
+      app->currentNode->task.indentation =
+          app->currentNode->task.indentation - 2;
+      writeFile(app->head, app->taskLength);
+    }
     break;
   case 'c':
     app->currentNode->task.status = (app->currentNode->task.status + 1) % 4;
+    writeFile(app->head, app->taskLength);
     break;
   case 'x': {
     removeTask(app);
