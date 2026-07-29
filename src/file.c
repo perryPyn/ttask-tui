@@ -7,6 +7,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const char *STATUS_SYMBOLS[TASK_COUNT] = {[TASK_TODO] = " ",
+                                                 [TASK_IN_PROGRESS] = "-",
+                                                 [TASK_DONE] = "x",
+                                                 [TASK_ON_HOLD] = "~"};
+
+TaskStatus statusFromChar(char c) {
+  for (int i = 0; i < TASK_COUNT; i++) {
+    if (STATUS_SYMBOLS[i][0] == c) {
+      return (TaskStatus)i;
+    }
+  }
+  return TASK_TODO;
+}
+
 int loadFile(Node *head) {
   FILE *fptr;
 
@@ -22,15 +36,20 @@ int loadFile(Node *head) {
 
   int i = 0;
   for (; fgets(line, TITLE_LENGTH, fptr) != NULL; i++) {
-    msgLog("   %s", line);
+    msgLog("\t%s", line);
     line[strcspn(line, "\r\n")] = '\0';
 
-    // Checking the indentation
-    // ...
+    // // Checking the indentation
+    // int indentation = 0;
+    // while (line[indentation] == '\t') {
+    //   indentation++;
+    // }
+    // msgLog("[[info]] for the line %d, l'indentation est de %d\n", i,
+    //        indentation);
 
     // Creating the node
-    Task task = {line[3] == 'x', ""};
-    cpyStr(task.title, &line[6]);
+    Task task = {/*indentation,*/ statusFromChar(line[3 /*+ indentation*/]), ""};
+    strcpy(task.title, &line[/*indentation + */6]);
     addNodeAtIndex(&task, head, i);
   }
 
@@ -52,9 +71,8 @@ void writeFile(Node *head, int taskLength) {
   Node *node = head;
   while (node->next != NULL) {
     node = node->next;
-    
 
-    fprintf(fptr, "- [%c] %s\n", node->task.status ? 'x' : ' ',
+    fprintf(fptr, "- [%s] %s\n", STATUS_SYMBOLS[node->task.status],
             node->task.title);
   }
 
@@ -67,6 +85,6 @@ void printTaskTable(Node *head, int taskLength) {
   Node *node = head;
   while (node->next != NULL) {
     node = node->next;
-    msgLog("[%d] | [%s]\n", node->task.status, node->task.title);
+    msgLog("\t[%d] | [%s]\n", node->task.status, node->task.title);
   }
 }

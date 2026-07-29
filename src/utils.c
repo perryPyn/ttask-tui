@@ -23,7 +23,7 @@ void appendTask(AppState *app) {
   getstr(title);
 
   // Creating the node
-  Task task = {0, ""};
+  Task task = {0,0, ""};
   cpyStr(task.title, title);
   addNode(&task, app->currentNode);
 

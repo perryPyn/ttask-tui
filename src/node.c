@@ -81,7 +81,7 @@ void removeNodeAtIndex(Node *head, int index) {
 
 void printNodes(Node *head) {
   Node *node = head;
-  msgLog("[INFO] Printing nodes :\n   ");
+  msgLog("[INFO] Printing nodes :\n\t");
   while (node->next != NULL) {
     node = node->next;
     msgLog("%s -> ", node->task.title);

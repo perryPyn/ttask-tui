@@ -11,7 +11,7 @@
 void setup(AppState *app) {
   initUI();
 
-  app->head = createNode(&(Task){0, "Head"});
+  app->head = createNode(&(Task){/*0 ,*/ 0, "Head"});
   app->taskLength = loadFile(app->head) - 1;
   app->currentNode = app->head->next;
   app->isRunning = true;
