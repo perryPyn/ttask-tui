@@ -40,16 +40,16 @@ int loadFile(Node *head) {
     line[strcspn(line, "\r\n")] = '\0';
 
     // // Checking the indentation
-    // int indentation = 0;
-    // while (line[indentation] == '\t') {
-    //   indentation++;
-    // }
+    int indentation = 0;
+    while (line[indentation] == ' ') {
+      indentation++;
+    }
     // msgLog("[[info]] for the line %d, l'indentation est de %d\n", i,
     //        indentation);
 
     // Creating the node
-    Task task = {/*indentation,*/ statusFromChar(line[3 /*+ indentation*/]), ""};
-    strcpy(task.title, &line[/*indentation + */6]);
+    Task task = {indentation, statusFromChar(line[3 + indentation]), ""};
+    cpyStr(task.title, &line[6 + indentation]);
     addNodeAtIndex(&task, head, i);
   }
 

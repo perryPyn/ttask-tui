@@ -1,5 +1,4 @@
 #include "ui.h"
-#include "log.h"
 #include "node.h"
 #include "task.h"
 #include "utils.h"
