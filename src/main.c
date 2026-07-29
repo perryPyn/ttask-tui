@@ -18,18 +18,24 @@ void setup(AppState *app) {
   app->cursorLine = 0;
 
   printNodes(app->head);
-
   refresh();
 }
 
 void loop(AppState *app) {
-  wclear(app->sidebarWin);
-  wclear(app->tasksWin);
+  werase(app->sidebarWin);
+  werase(app->sidebarContent);
+  werase(app->tasksWin);
+  werase(app->tasksContent);
 
-  displayNodeTable(app->tasksWin, app->head, app->taskLength, app->cursorLine);
+  displayNodeTable(app->tasksContent, app->head, app->taskLength,
+                   app->cursorLine);
 
+  box(app->sidebarWin, 0, 0);
+  box(app->tasksWin, 0, 0);
   wnoutrefresh(app->sidebarWin);
+  wnoutrefresh(app->sidebarContent);
   wnoutrefresh(app->tasksWin);
+  wnoutrefresh(app->tasksContent);
 
   doupdate();
 

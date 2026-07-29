@@ -10,8 +10,11 @@ typedef struct {
   int taskLength;
   int isRunning;
   int cursorLine;
+
   WINDOW *sidebarWin;
+  WINDOW *sidebarContent;
   WINDOW *tasksWin;
+  WINDOW *tasksContent;
 } AppState;
 
 #endif // !APP_H

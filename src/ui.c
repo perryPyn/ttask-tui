@@ -28,7 +28,10 @@ void initWin(AppState *app) {
 
   // newwin(hauteur, largeur, start_y, start_x)
   app->sidebarWin = newwin(height, sidebarWidth, 0, 0);
+  app->sidebarContent =
+      derwin(app->sidebarWin, height - 2, sidebarWidth - 2, 1, 1);
   app->tasksWin = newwin(height, tasksWidth, 0, sidebarWidth);
+  app->tasksContent = derwin(app->tasksWin, height - 2, sidebarWidth - 2, 1, 1);
 }
 
 void strikeThrough(const char *src, char *dest) {
