@@ -1,10 +1,10 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "task.h"
+#include "node.h"
 
-int loadFile(task taskTable[TABLE_LENGTH]);
-void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength);
-void writeFile(task taskTable[TABLE_LENGTH], int taskLength);
+int loadFile(Node *head);
+void writeFile(Node *head, int taskLength);
+void printTaskTable(Node *head, int taskLength);
 
 #endif // !FILE_H

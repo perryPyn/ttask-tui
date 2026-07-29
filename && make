@@ -1,0 +1,66 @@
+#include "file.h"
+#include "log.h"
+#include "task.h"
+#include "utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int loadFile(Node *head) {
+  FILE *fptr;
+
+  fptr = fopen("file.txt", "r");
+  if (fptr == NULL) {
+    msgLog("[CRIT] file.txt file failed to open.\n");
+    exit(0);
+  }
+  msgLog("[INFO] The file is now opened.\n");
+
+  msgLog("[INFO] Printing lines read :\n");
+  char line[256];
+
+  int i = 0;
+  for (; fgets(line, TITLE_LENGTH, fptr) != NULL; i++) {
+    msgLog("   %s", line);
+
+    // Checking the indentation
+    // ...
+
+    // Creating the node
+    Task task = {line[3] == 'x', ""};
+    cpyStr(task.title, &line[6]);
+    addNodeAtIndex(task, head, i);
+  }
+
+  fclose(fptr);
+  msgLog("[INFO] The file is now closed, read %d lines\n", i);
+  return i;
+}
+
+void writeFile(Task taskTable[TABLE_LENGTH], int taskLength) {
+  FILE *fptr;
+
+  fptr = fopen("file.txt", "w");
+  if (fptr == NULL) {
+    msgLog("[CRIT] file.txt file failed to open.\n");
+    exit(0);
+  }
+  msgLog("[INFO] The file is ready for rewriting\n");
+
+  for (int i = 0; i < taskLength; i++) {
+    fprintf(fptr, "- [%c] %s\n", taskTable[i].isDone ? 'x' : ' ',
+            taskTable[i].title);
+  }
+  fclose(fptr);
+  msgLog("[INFO] Closing rewritten file.\n");
+}
+
+void printTaskTable(Task taskTable[TABLE_LENGTH], int taskLength) {
+  msgLog("[INFO] Printing taskTable :\n");
+  for (int i = 0; i < taskLength; i++) {
+    msgLog("[%i]", taskTable[i].isDone);
+    msgLog(" | ");
+    msgLog("[%s]", taskTable[i].title);
+    // msgLog("\r\n");
+  }
+}

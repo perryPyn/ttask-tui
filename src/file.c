@@ -1,10 +1,27 @@
 #include "file.h"
 #include "log.h"
+#include "node.h"
+#include "task.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int loadFile(task taskTable[TABLE_LENGTH]) {
+static const char *STATUS_SYMBOLS[TASK_COUNT] = {[TASK_TODO] = " ",
+                                                 [TASK_IN_PROGRESS] = "-",
+                                                 [TASK_DONE] = "x",
+                                                 [TASK_ON_HOLD] = "~"};
+
+TaskStatus statusFromChar(char c) {
+  for (int i = 0; i < TASK_COUNT; i++) {
+    if (STATUS_SYMBOLS[i][0] == c) {
+      return (TaskStatus)i;
+    }
+  }
+  return TASK_TODO;
+}
+
+int loadFile(Node *head) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "r");
@@ -14,28 +31,34 @@ int loadFile(task taskTable[TABLE_LENGTH]) {
   }
   msgLog("[INFO] The file is now opened.\n");
 
-  int tableIndex = 0;
   msgLog("[INFO] Printing lines read :\n");
   char line[256];
 
-  while (tableIndex < TABLE_LENGTH &&
-         fgets(line, sizeof(taskTable[tableIndex].title), fptr) != NULL) {
+  int i = 0;
+  for (; fgets(line, TITLE_LENGTH, fptr) != NULL; i++) {
+    msgLog("\t%s", line);
+    line[strcspn(line, "\r\n")] = '\0';
 
-    msgLog("%s", line);
-    taskTable[tableIndex].isDone = line[3] == 'x';
-    strncpy(taskTable[tableIndex].title, &line[6], TITLE_LENGTH);
-    taskTable[tableIndex].title[strcspn(taskTable[tableIndex].title, "\r\n")] =
-        '\0';
+    // // Checking the indentation
+    // int indentation = 0;
+    // while (line[indentation] == '\t') {
+    //   indentation++;
+    // }
+    // msgLog("[[info]] for the line %d, l'indentation est de %d\n", i,
+    //        indentation);
 
-    tableIndex++;
+    // Creating the node
+    Task task = {/*indentation,*/ statusFromChar(line[3 /*+ indentation*/]), ""};
+    strcpy(task.title, &line[/*indentation + */6]);
+    addNodeAtIndex(&task, head, i);
   }
 
   fclose(fptr);
-  msgLog("[INFO] The file is now closed, read %d lines\n", tableIndex);
-  return tableIndex;
+  msgLog("[INFO] The file is now closed, read %d lines\n", i);
+  return i;
 }
 
-void writeFile(task taskTable[TABLE_LENGTH], int taskLength) {
+void writeFile(Node *head, int taskLength) {
   FILE *fptr;
 
   fptr = fopen("file.txt", "w");
@@ -45,20 +68,23 @@ void writeFile(task taskTable[TABLE_LENGTH], int taskLength) {
   }
   msgLog("[INFO] The file is ready for rewriting\n");
 
-  for (int i = 0; i < taskLength; i++) {
-    fprintf(fptr, "- [%c] %s\n", taskTable[i].isDone ? 'x' : ' ',
-            taskTable[i].title);
+  Node *node = head;
+  while (node->next != NULL) {
+    node = node->next;
+
+    fprintf(fptr, "- [%s] %s\n", STATUS_SYMBOLS[node->task.status],
+            node->task.title);
   }
+
   fclose(fptr);
   msgLog("[INFO] Closing rewritten file.\n");
 }
 
-void printTaskTable(task taskTable[TABLE_LENGTH], int taskLength) {
+void printTaskTable(Node *head, int taskLength) {
   msgLog("[INFO] Printing taskTable :\n");
-  for (int i = 0; i < taskLength; i++) {
-    msgLog("[%i]", taskTable[i].isDone);
-    msgLog(" | ");
-    msgLog("[%s]", taskTable[i].title);
-    msgLog("\r\n");
+  Node *node = head;
+  while (node->next != NULL) {
+    node = node->next;
+    msgLog("\t[%d] | [%s]\n", node->task.status, node->task.title);
   }
 }

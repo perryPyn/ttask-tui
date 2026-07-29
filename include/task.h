@@ -5,12 +5,18 @@
 #define TABLE_LENGTH 256
 
 typedef struct {
-  int isDone;
+  // int indentation;
+  int status;
   char title[TITLE_LENGTH];
   // char description[512];
-} task;
+} Task;
 
-void toggleTaskStatus(task taskTable[TABLE_LENGTH], int lineNumber);
-void addTask(task taskTable[TABLE_LENGTH], int lineNumber, int *taskLength);
+typedef enum {
+    TASK_TODO = 0,
+    TASK_IN_PROGRESS,
+    TASK_DONE,
+    TASK_ON_HOLD,
+    TASK_COUNT
+} TaskStatus;
 
 #endif // !TASK_H

@@ -1,10 +1,11 @@
 #ifndef APP_H
 #define APP_H
 
-#include "task.h"
+#include "node.h"
 
 typedef struct {
-  task taskTable[TABLE_LENGTH];
+  Node *head;
+  Node *currentNode;
   int taskLength;
   int isRunning;
   int cursorLine;
