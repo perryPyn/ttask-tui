@@ -24,9 +24,9 @@ TaskStatus statusFromChar(char c) {
 int loadFile(Node *head) {
   FILE *fptr;
 
-  fptr = fopen("file.txt", "r");
+  fptr = fopen("file.md", "r");
   if (fptr == NULL) {
-    msgLog("[CRIT] file.txt file failed to open.\n");
+    msgLog("[CRIT] file.md file failed to open.\n");
     exit(0);
   }
   msgLog("[INFO] The file is now opened.\n");
@@ -59,9 +59,9 @@ int loadFile(Node *head) {
 void writeFile(Node *head, int taskLength) {
   FILE *fptr;
 
-  fptr = fopen("file.txt", "w");
+  fptr = fopen("file.md", "w");
   if (fptr == NULL) {
-    msgLog("[CRIT] file.txt file failed to open.\n");
+    msgLog("[CRIT] file.md file failed to open.\n");
     exit(0);
   }
   msgLog("[INFO] The file is ready for rewriting\n");
