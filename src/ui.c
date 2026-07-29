@@ -75,7 +75,7 @@ void displayNodeTable(WINDOW *win, Node *head, int taskLength, int cursorLine) {
     checkDimmedParents(node);
 
     wprintw(win, "%*s%s %s\n", node->task.indentation, "",
-           STATUS_SYMBOLS[node->task.status], title);
-    attroff(A_STANDOUT | A_DIM | A_BOLD);
+            STATUS_SYMBOLS[node->task.status], title);
+    wattroff(win, A_STANDOUT | A_DIM | A_BOLD);
   }
 }
