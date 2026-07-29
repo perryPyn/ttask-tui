@@ -10,6 +10,7 @@
 
 void setup(AppState *app) {
   initUI();
+  initWin(app);
 
   app->head = createNode(&(Task){0, 0, "Head"});
   app->taskLength = loadFile(app->head) - 1;
@@ -23,9 +24,15 @@ void setup(AppState *app) {
 }
 
 void loop(AppState *app) {
-  clear();
-  displayNodeTable(app->head, app->taskLength, app->cursorLine);
-  refresh();
+  wclear(app->sidebarWin);
+  wclear(app->tasksWin);
+
+  displayNodeTable(app->tasksWin, app->head, app->taskLength, app->cursorLine);
+
+  wnoutrefresh(app->sidebarWin);
+  wnoutrefresh(app->tasksWin);
+
+  doupdate();
 
   int ch = getch();
 

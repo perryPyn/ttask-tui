@@ -1,5 +1,4 @@
 #include "ui.h"
-#include "node.h"
 #include "task.h"
 #include "utils.h"
 #include <locale.h>
@@ -20,6 +19,18 @@ void initUI(void) {
   curs_set(0);          // Hide cursor
 }
 
+void initWin(AppState *app) {
+  int height, width;
+  getmaxyx(stdscr, height, width);
+
+  int sidebarWidth = width * 0.3;
+  int tasksWidth = width - sidebarWidth;
+
+  // newwin(hauteur, largeur, start_y, start_x)
+  app->sidebarWin = newwin(height, sidebarWidth, 0, 0);
+  app->tasksWin = newwin(height, tasksWidth, 0, sidebarWidth);
+}
+
 void strikeThrough(const char *src, char *dest) {
   int j = 0;
   for (int i = 0; src[i] != '\0'; i++) {
@@ -31,14 +42,14 @@ void strikeThrough(const char *src, char *dest) {
 }
 
 // ◐ | ◌ | ● | ○
-void displayNodeTable(Node *head, int taskLength, int cursorLine) {
+void displayNodeTable(WINDOW *win, Node *head, int taskLength, int cursorLine) {
   // msgLog("[INFO] Diplaying lines :\n");
   Node *node = head->next;
   for (int i = 0; node != NULL; i++, node = node->next) {
     // msgLog("[INFO] Line %d\n", i);
 
     if (i == cursorLine) {
-      attron(A_STANDOUT);
+      wattron(win, A_STANDOUT);
     }
 
     char title[strlen(node->task.title) * 3 + 1];
@@ -47,15 +58,15 @@ void displayNodeTable(Node *head, int taskLength, int cursorLine) {
       cpyStr(title, node->task.title);
       break;
     case 1: // TASK_IN_PROGRESS
-      attron(A_BOLD);
+      wattron(win, A_BOLD);
       cpyStr(title, node->task.title);
       break;
     case 2: // TASK_DONE
-      attron(A_DIM);
+      wattron(win, A_DIM);
       strikeThrough(node->task.title, title);
       break;
     case 3: // TASK_ON_HOLD
-      attron(A_DIM);
+      wattron(win, A_DIM);
       cpyStr(title, node->task.title);
       break;
     }
@@ -63,7 +74,7 @@ void displayNodeTable(Node *head, int taskLength, int cursorLine) {
     // Find the first parent that is marked as DONE or ON_HOLD
     checkDimmedParents(node);
 
-    printw("%*s%s %s\n", node->task.indentation, "",
+    wprintw(win, "%*s%s %s\n", node->task.indentation, "",
            STATUS_SYMBOLS[node->task.status], title);
     attroff(A_STANDOUT | A_DIM | A_BOLD);
   }
