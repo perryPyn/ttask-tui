@@ -7,6 +7,7 @@
 
 void initUI(void);
 void initWin(AppState *app);
+void destWin(AppState *app);
 void displayNodeTable(WINDOW *win, Node *head, int taskLength, int cursorLine);
 
 #endif // !UI_H

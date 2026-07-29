@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "app.h"
 #include "task.h"
 #include "utils.h"
 #include <locale.h>
@@ -23,15 +24,30 @@ void initWin(AppState *app) {
   int height, width;
   getmaxyx(stdscr, height, width);
 
+  // Setting up window ratio
   int sidebarWidth = width * 0.3;
   int tasksWidth = width - sidebarWidth;
 
-  // newwin(hauteur, largeur, start_y, start_x)
+  // Creating container and content windows
   app->sidebarWin = newwin(height, sidebarWidth, 0, 0);
-  app->sidebarContent =
-      derwin(app->sidebarWin, height - 2, sidebarWidth - 2, 1, 1);
+  app->sidebarContent = derwin(app->sidebarWin, height - 2, sidebarWidth - 2, 1, 1);
   app->tasksWin = newwin(height, tasksWidth, 0, sidebarWidth);
   app->tasksContent = derwin(app->tasksWin, height - 2, sidebarWidth - 2, 1, 1);
+  app->activeWin = app->tasksContent;// app->activeWin = app->sidebarContent;
+}
+
+void destWin(AppState *app) {
+  // Deleting windows
+  delwin(app->tasksContent);
+  delwin(app->sidebarContent);
+  delwin(app->tasksWin);
+  delwin(app->sidebarWin);
+
+  // Freeing pointers
+  app->tasksContent = NULL;
+  app->sidebarContent = NULL;
+  app->tasksWin = NULL;
+  app->sidebarWin = NULL;
 }
 
 void strikeThrough(const char *src, char *dest) {

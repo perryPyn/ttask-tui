@@ -18,7 +18,6 @@ void setup(AppState *app) {
   app->cursorLine = 0;
 
   printNodes(app->head);
-  refresh();
 }
 
 void loop(AppState *app) {
@@ -27,8 +26,10 @@ void loop(AppState *app) {
   werase(app->tasksWin);
   werase(app->tasksContent);
 
-  displayNodeTable(app->tasksContent, app->head, app->taskLength,
-                   app->cursorLine);
+  if (app->activeWin == app->tasksContent) {
+    displayNodeTable(app->tasksContent, app->head, app->taskLength,
+                     app->cursorLine);
+  }
 
   box(app->sidebarWin, 0, 0);
   box(app->tasksWin, 0, 0);
@@ -39,9 +40,22 @@ void loop(AppState *app) {
 
   doupdate();
 
-  int ch = getch();
+  int ch = wgetch(app->activeWin);
 
   switch (ch) {
+  case KEY_RESIZE:
+    resizeterm(0, 0);
+    clear();
+    destWin(app);
+    initWin(app);
+    break;
+  case '\t':
+    if (app->activeWin == app->tasksContent) {
+      app->activeWin = app->sidebarContent;
+    } else {
+      app->activeWin = app->tasksContent;
+    }
+    break;
   case 'q':
     app->isRunning = 0;
     break;

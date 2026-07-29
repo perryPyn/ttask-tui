@@ -11,6 +11,7 @@ typedef struct {
   int isRunning;
   int cursorLine;
 
+  WINDOW *activeWin;
   WINDOW *sidebarWin;
   WINDOW *sidebarContent;
   WINDOW *tasksWin;

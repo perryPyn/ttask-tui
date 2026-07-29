@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "log.h"
 #include "task.h"
+#include <ncurses.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -14,7 +15,8 @@ void cpyStr(char *dest, const char *src) {
 }
 
 void appendTask(AppState *app) {
-  echo(); // Restoring vision on the user input
+  echo();      // Restoring vision on the user input
+  curs_set(1); // Show cursor
 
   char title[TITLE_LENGTH];
   // Get user input
@@ -30,6 +32,7 @@ void appendTask(AppState *app) {
   app->currentNode = app->currentNode->next;
 
   noecho();
+  curs_set(0);
 }
 
 void removeTask(AppState *app) {
