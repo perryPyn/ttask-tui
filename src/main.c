@@ -4,6 +4,7 @@
 #include "node.h"
 #include "types.h"
 #include "ui.h"
+#include "workspaceNode.h"
 #include <ncurses.h>
 
 static void setup(AppState *app) {
@@ -12,9 +13,11 @@ static void setup(AppState *app) {
   app->isRunning = true;
   app->activeFocus = FOCUS_TASKS;
 
-  app->taskData.head = createNode(&(Task){0, 0, "Head"});
-  app->taskData.length = loadFile(app->taskData.head) - 1;
-  app->taskData.currentNode = app->taskData.head->next;
+  TaskData taskData = {createNode(&(Task){0, 0, "Head"})};
+  taskData.length = loadFile(taskData.head) - 1;
+  taskData.currentNode = taskData.head->next;
+  app->workspaceData.headWorkspace = createWorkspace("Default", &taskData);
+  app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
 
   initWin(app);
   app->tasksPanel.cursor = 0;
@@ -46,7 +49,7 @@ int main() {
     loop(&app);
   }
 
-  cleanup(&app.taskData);
+  cleanup(&app.workspaceData.currentWorkspace->taskData);
 
   return 0;
 }

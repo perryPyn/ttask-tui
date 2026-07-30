@@ -2,7 +2,9 @@
 #include "file.h"
 #include "node.h"
 #include "task.h"
+#include "types.h"
 #include "ui.h"
+#include "workspace.h"
 
 static void handleTaskInput(TaskData *taskData, int *cursor, int ch) {
   switch (ch) {
@@ -53,6 +55,22 @@ static void handleTaskInput(TaskData *taskData, int *cursor, int ch) {
   }
 }
 
+static void handleWorkspaceInput(WorkspaceData *workspaceData, int *cursor,
+                                 int ch) {
+  switch (ch) {
+  case 'k':
+    moveUpWorkspace(workspaceData, cursor);
+    break;
+  case 'j':
+    moveDownWorkspace(workspaceData, cursor);
+    break;
+  case 'a':
+    appendWorkspace(workspaceData, cursor);
+    // writeFile(taskData->head);
+    break;
+  }
+}
+
 void handleInput(AppState *app, WINDOW *activeWin, int ch) {
   switch (ch) {
   case KEY_RESIZE:
@@ -74,7 +92,10 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
     break;
   default:
     if (app->activeFocus == FOCUS_TASKS) {
-      handleTaskInput(&app->taskData, &app->tasksPanel.cursor, ch);
+      handleTaskInput(&app->workspaceData.currentWorkspace->taskData,
+                      &app->tasksPanel.cursor, ch);
+    } else {
+      handleWorkspaceInput(&app->workspaceData, &app->sidebarPanel.cursor, ch);
     }
   }
 }
