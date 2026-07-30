@@ -61,33 +61,6 @@ void removeNode(Node *node) {
   free(node);
 }
 
-void addNodeAtIndex(Task *task, Node *head, int index) {
-  // Looking for the spot for the new node
-  Node *nodeAtIndex = head;
-  for (int i = 0; i < index; i++) {
-    if (nodeAtIndex->next == NULL) {
-      break;
-    }
-    nodeAtIndex = nodeAtIndex->next;
-  }
-
-  // Insert new node
-  addNode(task, nodeAtIndex);
-}
-
-void removeNodeAtIndex(Node *head, int index) {
-
-  Node *nodeAtIndex = head;
-  for (int i = 0; i < index; i++) {
-    if (nodeAtIndex->next == NULL) {
-      break;
-    }
-    nodeAtIndex = nodeAtIndex->next;
-  }
-
-  removeNode(nodeAtIndex);
-}
-
 void printNodes(Node *head) {
   Node *node = head;
   msgLog("[INFO] Printing nodes :\n\t");
