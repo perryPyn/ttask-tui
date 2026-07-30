@@ -59,7 +59,7 @@ static void renderSidebar(Panel *panel) {
   werase(panel->content);
 
   // displaySidebar(){...}
-  box(panel->win, 0, 0);
+  drawRoundedBox(panel->win, "Workspaces");
 
   wnoutrefresh(panel->win);
   wnoutrefresh(panel->content);
@@ -72,7 +72,7 @@ static void renderTasks(Panel *panel, TaskData *taskData, bool hasFocus) {
   displayNodeTable(panel->content, taskData->head, taskData->length,
                    panel->cursor);
 
-  box(panel->win, 0, 0);
+  drawRoundedBox(panel->win, "Tasks");
 
   wnoutrefresh(panel->win);
   wnoutrefresh(panel->content);

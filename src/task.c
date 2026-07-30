@@ -19,7 +19,9 @@ void appendTask(TaskData *taskData, int *cursor) {
   width *= 0.7;
   WINDOW *win = newwin(height, width, starty, startx);
   WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
-  box(win, 0, 0);
+  // box(win, 0, 0);
+  // wborder_set(win, "│", "│", "─", "─", "╭", "╮", "╰", "╯");
+  drawRoundedBox(win, "Title");
   wnoutrefresh(win);
   wnoutrefresh(content);
   doupdate();
