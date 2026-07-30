@@ -2,6 +2,7 @@
 #include "log.h"
 #include "node.h"
 #include "utils.h"
+#include <ncurses.h>
 #include <stdio.h>
 
 void appendTask(TaskData *taskData, int *cursor) {
@@ -9,12 +10,34 @@ void appendTask(TaskData *taskData, int *cursor) {
     taskData->currentNode = taskData->head;
     (*cursor)--;
   }
+
+  // Creating new window for typing
+  int height, width;
+  getmaxyx(stdscr, height, width);
+  int starty = (1 - 0.3) * height / 2, startx = (1 - 0.7) * width / 2;
+  height *= 0.3;
+  width *= 0.7;
+  WINDOW *win = newwin(height, width, starty, startx);
+  WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
+  box(win, 0, 0);
+  wnoutrefresh(win);
+  wnoutrefresh(content);
+  doupdate();
+
   echo();      // Restoring vision of the user input
   curs_set(1); // Show cursor
 
   char title[TITLE_LENGTH];
   // Get user input
-  getstr(title);
+  flushinp();
+  wgetnstr(content, title, TITLE_LENGTH);
+  // wgetstr(content, title);
+
+  noecho();
+  curs_set(0);
+
+  delwin(content);
+  delwin(win);
 
   // Creating the node
   Task task = {0, 0, ""};
@@ -24,9 +47,6 @@ void appendTask(TaskData *taskData, int *cursor) {
   taskData->length += 1;
   (*cursor)++;
   taskData->currentNode = taskData->currentNode->next;
-
-  noecho();
-  curs_set(0);
 }
 
 void removeTask(TaskData *taskData, int *cursor) {

@@ -83,7 +83,6 @@ void renderUI(AppState *app) {
   renderTasks(&app->tasksPanel, &app->taskData,
               app->activeFocus == FOCUS_TASKS);
 
-  // Un seul appel final à doupdate() pour le terminal
   doupdate();
 }
 
@@ -128,7 +127,7 @@ void displayNodeTable(WINDOW *win, Node *head, int taskLength, int cursorLine) {
       break;
     }
 
-    // Find the first parent that is marked as DONE or ON_HOLD
+    // Check if a parent is marked as DONE or ON_HOLD
     checkDimmedParents(win, node);
 
     wprintw(win, "%*s%s %s\n", node->task.indentation, "",
