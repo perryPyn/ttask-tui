@@ -1,10 +1,11 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "node.h"
+#include "types.h"
+#include <threads.h>
 
 int loadFile(Node *head);
-void writeFile(Node *head, int taskLength);
-void printTaskTable(Node *head, int taskLength);
+void writeFile(Node *head);
+void printTaskTable(Node *head);
 
 #endif // !FILE_H

@@ -1,6 +1,5 @@
 #include "node.h"
 #include "log.h"
-#include "task.h"
 #include <stdlib.h>
 
 Node *createNode(Task *task) {
@@ -34,6 +33,16 @@ void addNode(Task *task, Node *nodeToTarget) {
   if (nodeToTarget != NULL) {
     nodeToTarget->next = node;
   }
+}
+
+Node *appendNode(Task *task, Node *previousNode) {
+  Node *node = createNode(task);
+
+  node->previous = previousNode;
+  node->next = NULL;
+
+  previousNode->next = node;
+  return node;
 }
 
 void removeNode(Node *node) {
@@ -90,6 +99,6 @@ void printNodes(Node *head) {
   msgLog("[INFO] End of nodes\n");
 }
 
-void toggleTaskStatus(Node *node, int lineNumber) {
+void toggleNode(Node *node) {
   node->task.status = (node->task.status != 0) ? 0 : 2;
 }

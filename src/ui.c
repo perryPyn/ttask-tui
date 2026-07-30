@@ -1,9 +1,6 @@
 #include "ui.h"
-#include "app.h"
-#include "task.h"
 #include "utils.h"
 #include <locale.h>
-#include <ncurses.h>
 #include <string.h>
 
 static const char *STATUS_SYMBOLS[TASK_COUNT] = {[TASK_TODO] = "○",
@@ -20,6 +17,13 @@ void initUI(void) {
   curs_set(0);          // Hide cursor
 }
 
+/*---Manage windows and panels---*/
+static void initPanel(Panel *panel, int height, int width, int starty,
+                      int startx) {
+  panel->win = newwin(height, width, starty, startx);
+  panel->content = derwin(panel->win, height - 2, width - 2, 1, 1);
+}
+
 void initWin(AppState *app) {
   int height, width;
   getmaxyx(stdscr, height, width);
@@ -29,28 +33,62 @@ void initWin(AppState *app) {
   int tasksWidth = width - sidebarWidth;
 
   // Creating container and content windows
-  app->sidebarWin = newwin(height, sidebarWidth, 0, 0);
-  app->sidebarContent = derwin(app->sidebarWin, height - 2, sidebarWidth - 2, 1, 1);
-  app->tasksWin = newwin(height, tasksWidth, 0, sidebarWidth);
-  app->tasksContent = derwin(app->tasksWin, height - 2, sidebarWidth - 2, 1, 1);
-  app->activeWin = app->tasksContent;// app->activeWin = app->sidebarContent;
+  initPanel(&app->sidebarPanel, height, sidebarWidth, 0, 0);
+  initPanel(&app->tasksPanel, height, tasksWidth, 0, sidebarWidth);
+}
+
+static void destPanel(Panel *panel) {
+  if (panel->content) {
+    delwin(panel->content);
+    panel->content = NULL;
+  }
+  if (panel->win) {
+    delwin(panel->win);
+    panel->win = NULL;
+  }
 }
 
 void destWin(AppState *app) {
-  // Deleting windows
-  delwin(app->tasksContent);
-  delwin(app->sidebarContent);
-  delwin(app->tasksWin);
-  delwin(app->sidebarWin);
-
-  // Freeing pointers
-  app->tasksContent = NULL;
-  app->sidebarContent = NULL;
-  app->tasksWin = NULL;
-  app->sidebarWin = NULL;
+  destPanel(&app->sidebarPanel);
+  destPanel(&app->tasksPanel);
 }
 
-void strikeThrough(const char *src, char *dest) {
+/*---Manage render elements---*/
+static void renderSidebar(Panel *panel) {
+  werase(panel->win);
+  werase(panel->content);
+
+  // displaySidebar(){...}
+  box(panel->win, 0, 0);
+
+  wnoutrefresh(panel->win);
+  wnoutrefresh(panel->content);
+}
+
+static void renderTasks(Panel *panel, TaskData *taskData, bool hasFocus) {
+  werase(panel->win);
+  werase(panel->content);
+
+  displayNodeTable(panel->content, taskData->head, taskData->length,
+                   panel->cursor);
+
+  box(panel->win, 0, 0);
+
+  wnoutrefresh(panel->win);
+  wnoutrefresh(panel->content);
+}
+
+void renderUI(AppState *app) {
+  renderSidebar(&app->sidebarPanel);
+  renderTasks(&app->tasksPanel, &app->taskData,
+              app->activeFocus == FOCUS_TASKS);
+
+  // Un seul appel final à doupdate() pour le terminal
+  doupdate();
+}
+
+/*---Manage appearence, maybe subject to move---*/
+static void strikeThrough(const char *src, char *dest) {
   int j = 0;
   for (int i = 0; src[i] != '\0'; i++) {
     dest[j++] = src[i];

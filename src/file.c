@@ -1,7 +1,6 @@
 #include "file.h"
 #include "log.h"
 #include "node.h"
-#include "task.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +11,7 @@ static const char *STATUS_SYMBOLS[TASK_COUNT] = {[TASK_TODO] = " ",
                                                  [TASK_DONE] = "x",
                                                  [TASK_ON_HOLD] = "~"};
 
-TaskStatus statusFromChar(char c) {
+static TaskStatus statusFromChar(char c) {
   for (int i = 0; i < TASK_COUNT; i++) {
     if (STATUS_SYMBOLS[i][0] == c) {
       return (TaskStatus)i;
@@ -35,11 +34,12 @@ int loadFile(Node *head) {
   char line[256];
 
   int i = 0;
+  Node *previousNode = head;
   for (; fgets(line, TITLE_LENGTH, fptr) != NULL; i++) {
     msgLog("\t%s", line);
     line[strcspn(line, "\r\n")] = '\0';
 
-    // // Checking the indentation
+    // Checking the indentation
     int indentation = 0;
     while (line[indentation] == ' ') {
       indentation++;
@@ -48,7 +48,7 @@ int loadFile(Node *head) {
     // Creating the node
     Task task = {indentation, statusFromChar(line[3 + indentation]), ""};
     cpyStr(task.title, &line[6 + indentation]);
-    addNodeAtIndex(&task, head, i);
+    previousNode = appendNode(&task, previousNode);
   }
 
   fclose(fptr);
@@ -56,7 +56,7 @@ int loadFile(Node *head) {
   return i;
 }
 
-void writeFile(Node *head, int taskLength) {
+void writeFile(Node *head) {
   FILE *fptr;
 
   fptr = fopen("file.md", "w");
@@ -77,7 +77,7 @@ void writeFile(Node *head, int taskLength) {
   msgLog("[INFO] Closing rewritten file.\n");
 }
 
-void printTaskTable(Node *head, int taskLength) {
+void printTaskTable(Node *head) {
   msgLog("[INFO] Printing taskTable :\n");
   Node *node = head;
   while (node->next != NULL) {

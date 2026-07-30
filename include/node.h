@@ -1,20 +1,15 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "task.h"
-
-typedef struct Node {
-  Task task;
-  struct Node *next;
-  struct Node *previous;
-} Node;
+#include "types.h"
 
 Node *createNode(Task *task);
 void addNode(Task *task, Node *nodeToTarget);
+Node *appendNode(Task *task, Node *previousNode);
 void removeNode(Node *node);
 void addNodeAtIndex(Task *task, Node *head, int index);
 void removeNodeAtIndex(Node *head, int index);
 void printNodes(Node *head);
-void toggleTaskStatus(Node *node, int lineNumber);
+void toggleNode(Node *node);
 
 #endif // !NODE_H
