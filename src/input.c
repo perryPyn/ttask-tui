@@ -62,13 +62,10 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
     initWin(app);
     break;
   case '\t': {
-    WINDOW *activeWin = (app->activeFocus == FOCUS_TASKS)
-                            ? app->tasksPanel.content
-                            : app->sidebarPanel.content;
-    if (activeWin == app->tasksPanel.content) {
-      activeWin = app->tasksPanel.content;
+    if (app->activeFocus == FOCUS_TASKS) {
+      app->activeFocus = FOCUS_SIDEBAR;
     } else {
-      activeWin = app->tasksPanel.content;
+      app->activeFocus = FOCUS_TASKS;
     }
     break;
   }
