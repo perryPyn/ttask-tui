@@ -19,9 +19,7 @@ void appendTask(TaskData *taskData, int *cursor) {
   width *= 0.7;
   WINDOW *win = newwin(height, width, starty, startx);
   WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
-  // box(win, 0, 0);
-  // wborder_set(win, "│", "│", "─", "─", "╭", "╮", "╰", "╯");
-  drawRoundedBox(win, "Title");
+  drawRoundedBox(win, "New Task");
   wnoutrefresh(win);
   wnoutrefresh(content);
   doupdate();
@@ -29,11 +27,10 @@ void appendTask(TaskData *taskData, int *cursor) {
   echo();      // Restoring vision of the user input
   curs_set(1); // Show cursor
 
-  char title[TITLE_LENGTH];
+  char title[TITLE_LENGTH - 1];
   // Get user input
   flushinp();
-  wgetnstr(content, title, TITLE_LENGTH);
-  // wgetstr(content, title);
+  wgetnstr(content, title, TITLE_LENGTH - 1);
 
   noecho();
   curs_set(0);

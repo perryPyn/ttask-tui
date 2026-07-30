@@ -4,7 +4,7 @@
 #include <ncurses.h>
 
 /*---Macro---*/
-#define TITLE_LENGTH 128
+#define TITLE_LENGTH 32
 #define TABLE_LENGTH 256
 
 /*--Enum---*/

@@ -18,8 +18,6 @@ static void setup(AppState *app) {
 
   initWin(app);
   app->tasksPanel.cursor = 0;
-
-  // printNodes(app->taskData.head);
 }
 
 static void loop(AppState *app) {
