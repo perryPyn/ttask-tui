@@ -6,5 +6,7 @@
 WorkspaceNode *createWorkspace(char name[NAME_LENGTH], TaskData *taskData);
 void addWorkspaceNode(char name[NAME_LENGTH], TaskData *taskData,
                       WorkspaceNode *workspaceNodeToTarget);
+WorkspaceNode *appendWorkspaceNode(char name[NAME_LENGTH], TaskData *taskData,
+                                   WorkspaceNode *previousWorkspace);
 
 #endif // !WORKSPACE_H

@@ -13,11 +13,15 @@ static void setup(AppState *app) {
   app->isRunning = true;
   app->activeFocus = FOCUS_TASKS;
 
-  TaskData taskData = {createNode(&(Task){0, 0, "Head"})};
-  taskData.length = loadFile(taskData.head) - 1;
-  taskData.currentNode = taskData.head->next;
+  TaskData taskData = {.head = createNode(&(Task){0, 0, "Head"}),
+                       .currentNode = NULL,
+                       .length = 0};
+
   app->workspaceData.headWorkspace = createWorkspace("Default", &taskData);
   app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
+  app->workspaceData.length = 1;
+
+  loadFile(&app->workspaceData);
 
   initWin(app);
   app->tasksPanel.cursor = 0;

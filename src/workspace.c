@@ -48,11 +48,9 @@ void moveUpWorkspace(WorkspaceData *workspaceData, int *cursor) {
   if (workspaceData->currentWorkspace == NULL) {
     return;
   }
-  if (*cursor > 0) {
-    (*cursor)--;
-  }
   if (workspaceData->currentWorkspace->previous != NULL) {
     workspaceData->currentWorkspace = workspaceData->currentWorkspace->previous;
+    (*cursor)--;
   }
 }
 
@@ -61,10 +59,9 @@ void moveDownWorkspace(WorkspaceData *workspaceData, int *cursor) {
     return;
   }
   if (*cursor < workspaceData->length) {
+  }
+  if (workspaceData->currentWorkspace->next != NULL) {
+    workspaceData->currentWorkspace = workspaceData->currentWorkspace->next;
     (*cursor)++;
   }
-  workspaceData->currentWorkspace =
-      (workspaceData->currentWorkspace->next != NULL)
-          ? workspaceData->currentWorkspace->next
-          : workspaceData->currentWorkspace;
 }

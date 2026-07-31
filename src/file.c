@@ -3,6 +3,8 @@
 #include "node.h"
 #include "types.h"
 #include "utils.h"
+#include "workspaceNode.h"
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,40 +23,71 @@ static TaskStatus statusFromChar(char c) {
   return TASK_TODO;
 }
 
-int loadFile(Node *head) {
-  FILE *fptr;
-
-  fptr = fopen("file.md", "r");
+int loadFile(WorkspaceData *workspaceData) {
+  FILE *fptr = fopen("file.md", "r");
   if (fptr == NULL) {
-    msgLog("[CRIT] file.md file failed to open.\n");
-    exit(0);
+    msgLog("[CRIT] file.md failed to open.\n");
+    return 0;
   }
-  msgLog("[INFO] The file is now opened.\n");
 
-  msgLog("[INFO] Printing lines read :\n");
   char line[256];
+  int linesRead = 0;
+  WorkspaceNode *currentWorkspace = workspaceData->headWorkspace;
+  Node *previousNode = currentWorkspace ? currentWorkspace->taskData.head : NULL;
+  bool isFirstWorkspace = true;
 
-  int i = 0;
-  Node *previousNode = head;
-  for (; fgets(line, TITLE_LENGTH, fptr) != NULL; i++) {
-    msgLog("\t%s", line);
+  while (fgets(line, sizeof(line), fptr) != NULL) {
+    linesRead++;
     line[strcspn(line, "\r\n")] = '\0';
 
-    // Checking the indentation
-    int indentation = 0;
-    while (line[indentation] == ' ') {
-      indentation++;
-    }
+    if (line[0] == '#') { // Ligne de workspace
+      char name[TITLE_LENGTH];
+      cpyStr(name, &line[2], TITLE_LENGTH);
 
-    // Creating the node
-    Task task = {indentation, statusFromChar(line[3 + indentation]), ""};
-    cpyStr(task.title, &line[6 + indentation]);
-    previousNode = appendNode(&task, previousNode);
+      if (isFirstWorkspace && currentWorkspace != NULL) {
+        // Met à jour le workspace par défaut
+        strcpy(currentWorkspace->name, name);
+        isFirstWorkspace = false;
+      } else {
+        // Nouveau workspace
+        Node *newHead = createNode(&(Task){0, 0, "Head"});
+        TaskData taskData = {.head = newHead, .currentNode = NULL, .length = 0};
+        currentWorkspace = appendWorkspaceNode(name, &taskData, currentWorkspace);
+        workspaceData->length++;
+        previousNode = newHead;
+      }
+    } else { // Ligne de tâche
+      int indentation = 0;
+      while (line[indentation] == ' ') {
+        indentation++;
+      }
+
+      if (strlen(line) >= (size_t)(6 + indentation) &&
+          line[indentation] == '-' && line[indentation + 2] == '[') {
+
+        Task task = {indentation, statusFromChar(line[3 + indentation]), ""};
+        cpyStr(task.title, &line[6 + indentation], TITLE_LENGTH);
+
+        previousNode = appendNode(&task, previousNode);
+
+        // Mise à jour de la taille des tâches pour ce workspace
+        if (currentWorkspace) {
+          currentWorkspace->taskData.length++;
+        }
+      }
+    }
   }
 
   fclose(fptr);
-  msgLog("[INFO] The file is now closed, read %d lines\n", i);
-  return i;
+
+  // Post-traitement : repositionner currentNode sur la première vraie tâche de chaque workspace
+  WorkspaceNode *ws = workspaceData->headWorkspace;
+  while (ws != NULL) {
+    ws->taskData.currentNode = ws->taskData.head->next;
+    ws = ws->next;
+  }
+
+  return linesRead;
 }
 
 void writeFile(WorkspaceNode *WorkspaceHead) {

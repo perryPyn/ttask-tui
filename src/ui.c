@@ -35,11 +35,11 @@ static void displayNodeTable(WINDOW *win, Node *head, int cursor) {
     char title[strlen(node->task.title) * 3 + 1];
     switch (node->task.status) {
     case 0: // TASK_TODO
-      cpyStr(title, node->task.title);
+      cpyStr(title, node->task.title, TITLE_LENGTH);
       break;
     case 1: // TASK_IN_PROGRESS
       wattron(win, A_BOLD);
-      cpyStr(title, node->task.title);
+      cpyStr(title, node->task.title, TITLE_LENGTH);
       break;
     case 2: // TASK_DONE
       wattron(win, A_DIM);
@@ -47,7 +47,7 @@ static void displayNodeTable(WINDOW *win, Node *head, int cursor) {
       break;
     case 3: // TASK_ON_HOLD
       wattron(win, A_DIM);
-      cpyStr(title, node->task.title);
+      cpyStr(title, node->task.title, TITLE_LENGTH);
       break;
     }
 

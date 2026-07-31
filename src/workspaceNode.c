@@ -1,6 +1,7 @@
 #include "workspaceNode.h"
 #include "log.h"
 #include "types.h"
+#include "workspace.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,4 +37,15 @@ void addWorkspaceNode(char name[NAME_LENGTH], TaskData *taskData,
   if (workspaceNodeToTarget != NULL) {
     workspaceNodeToTarget->next = workspaceNode;
   }
+}
+
+WorkspaceNode *appendWorkspaceNode(char name[NAME_LENGTH], TaskData *taskData,
+                                   WorkspaceNode *previousWorkspace) {
+  WorkspaceNode *workspaceNode = createWorkspace(name, taskData);
+
+  workspaceNode->previous = previousWorkspace;
+  workspaceNode->next = NULL;
+
+  previousWorkspace->next = workspaceNode;
+  return workspaceNode;
 }

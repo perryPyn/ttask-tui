@@ -4,7 +4,7 @@
 #include "types.h"
 #include <ncurses.h>
 
-void cpyStr(char *dest, const char *src);
+void cpyStr(char *dest, const char *src, int charLength);
 void drawRoundedBox(WINDOW *win, const char title[]);
 void checkDimmedParents(WINDOW *win, Node *node);
 
