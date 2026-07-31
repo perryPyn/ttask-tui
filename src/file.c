@@ -1,6 +1,7 @@
 #include "file.h"
 #include "log.h"
 #include "node.h"
+#include "types.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,7 +57,11 @@ int loadFile(Node *head) {
   return i;
 }
 
-void writeFile(Node *head) {
+void writeFile(WorkspaceNode *WorkspaceHead) {
+  if (WorkspaceHead == NULL) {
+    msgLog("[WARN] No workspaces to save.\n");
+    return;
+  }
   FILE *fptr;
 
   fptr = fopen("file.md", "w");
@@ -66,11 +71,16 @@ void writeFile(Node *head) {
   }
   msgLog("[INFO] The file is ready for rewriting\n");
 
-  Node *node = head;
-  while (node->next != NULL) {
-    node = node->next;
-    fprintf(fptr, "%*s- [%s] %s\n", node->task.indentation, "",
-            STATUS_SYMBOLS[node->task.status], node->task.title);
+  WorkspaceNode *workspaceNode = WorkspaceHead;
+  while (workspaceNode != NULL) {
+    fprintf(fptr, "# %s\n", workspaceNode->name);
+    Node *node = workspaceNode->taskData.head;
+    while (node->next != NULL) {
+      node = node->next; // At the start to skip head
+      fprintf(fptr, "%*s- [%s] %s\n", node->task.indentation, "",
+              STATUS_SYMBOLS[node->task.status], node->task.title);
+    }
+    workspaceNode = workspaceNode->next; // At the end to not skip Default
   }
 
   fclose(fptr);

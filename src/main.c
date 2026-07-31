@@ -34,9 +34,9 @@ static void loop(AppState *app) {
   handleInput(app, activeWin, ch);
 }
 
-static void cleanup(TaskData *taskData) {
+static void cleanup(WorkspaceNode *headWorkspace) {
   msgLog("[INFO] Saving file and stopping process...\n");
-  writeFile(taskData->head);
+  writeFile(headWorkspace);
   endwin();
 }
 
@@ -49,7 +49,7 @@ int main() {
     loop(&app);
   }
 
-  cleanup(&app.workspaceData.currentWorkspace->taskData);
+  cleanup(app.workspaceData.headWorkspace);
 
   return 0;
 }

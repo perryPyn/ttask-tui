@@ -77,10 +77,6 @@ void moveUp(TaskData *taskData, int *cursor) {
       taskData->currentNode->previous->previous != NULL) {
     taskData->currentNode = taskData->currentNode->previous;
   }
-
-  // taskData->currentNode = (taskData->currentNode->previous->previous != NULL)
-  //                             ? taskData->currentNode->previous
-  //                             : taskData->currentNode;
 }
 
 void moveDown(TaskData *taskData, int *cursor) {

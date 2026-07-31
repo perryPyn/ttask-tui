@@ -6,7 +6,8 @@
 #include "ui.h"
 #include "workspace.h"
 
-static void handleTaskInput(TaskData *taskData, int *cursor, int ch) {
+static void handleTaskInput(WorkspaceNode *workspaceHead, TaskData *taskData,
+                            int *cursor, int ch) {
   switch (ch) {
   case 'k':
     moveUp(taskData, cursor);
@@ -16,40 +17,40 @@ static void handleTaskInput(TaskData *taskData, int *cursor, int ch) {
     break;
   case ' ':
     toggleNode(taskData->currentNode);
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   case 'a':
     appendTask(taskData, cursor);
     taskData->currentNode->task.indentation =
         taskData->currentNode->previous->task.indentation;
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   case 'A':
     appendTask(taskData, cursor);
     taskData->currentNode->task.indentation =
         taskData->currentNode->previous->task.indentation + 2;
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   case '>':
     taskData->currentNode->task.indentation =
         taskData->currentNode->task.indentation + 2;
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   case '<':
     if (taskData->currentNode->task.indentation > 0) {
       taskData->currentNode->task.indentation =
           taskData->currentNode->task.indentation - 2;
-      writeFile(taskData->head);
+      writeFile(workspaceHead);
     }
     break;
   case 'c':
     taskData->currentNode->task.status =
         (taskData->currentNode->task.status + 1) % 4;
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   case 'x': {
     removeTask(taskData, cursor);
-    writeFile(taskData->head);
+    writeFile(workspaceHead);
     break;
   }
   }
@@ -96,7 +97,8 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
     break;
   default:
     if (app->activeFocus == FOCUS_TASKS) {
-      handleTaskInput(&app->workspaceData.currentWorkspace->taskData,
+      handleTaskInput(app->workspaceData.headWorkspace,
+                      &app->workspaceData.currentWorkspace->taskData,
                       &app->tasksPanel.cursor, ch);
     } else {
       handleWorkspaceInput(&app->activeFocus, &app->workspaceData,

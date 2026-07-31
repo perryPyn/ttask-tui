@@ -5,7 +5,7 @@
 #include <threads.h>
 
 int loadFile(Node *head);
-void writeFile(Node *head);
+void writeFile(WorkspaceNode *WorkspaceHead);
 void printTaskTable(Node *head);
 
 #endif // !FILE_H
