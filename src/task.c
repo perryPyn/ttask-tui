@@ -27,7 +27,7 @@ void appendTask(TaskData *taskData, int *cursor) {
   echo();      // Restoring vision of the user input
   curs_set(1); // Show cursor
 
-  char title[TITLE_LENGTH - 1];
+  char title[TITLE_LENGTH];
   // Get user input
   flushinp();
   wgetnstr(content, title, TITLE_LENGTH - 1);

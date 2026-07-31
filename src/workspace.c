@@ -6,11 +6,6 @@
 #include <ncurses.h>
 
 void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
-  // if (workspaceData.currentWorkspace == NULL) {
-  //   workspaceData.currentWorkspace = workspaceData.headWorkspace;
-  //   (*cursor)--;
-  // }
-
   // Creating new window for typing
   int height, width;
   getmaxyx(stdscr, height, width);
@@ -27,7 +22,7 @@ void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
   echo();      // Restoring vision of the user input
   curs_set(1); // Show cursor
 
-  char name[NAME_LENGTH - 1];
+  char name[NAME_LENGTH];
   // Get user input
   flushinp();
   wgetnstr(content, name, TITLE_LENGTH - 1);
@@ -39,8 +34,9 @@ void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
   delwin(win);
 
   // Creating the workspace
-  TaskData taskData = {createNode(&(Task){0, 0, "Head"}),
-                       workspaceData->headWorkspace->taskData.head, 1};
+  Node *newHead = createNode(&(Task){0, 0, "Head"});
+
+  TaskData taskData = {newHead, newHead->next, 0};
   addWorkspaceNode(name, &taskData, workspaceData->currentWorkspace);
 
   workspaceData->length += 1;
@@ -55,8 +51,7 @@ void moveUpWorkspace(WorkspaceData *workspaceData, int *cursor) {
   if (*cursor > 0) {
     (*cursor)--;
   }
-  if (workspaceData->currentWorkspace->previous != NULL &&
-      workspaceData->currentWorkspace->previous->previous != NULL) {
+  if (workspaceData->currentWorkspace->previous != NULL) {
     workspaceData->currentWorkspace = workspaceData->currentWorkspace->previous;
   }
 }

@@ -55,17 +55,21 @@ static void handleTaskInput(TaskData *taskData, int *cursor, int ch) {
   }
 }
 
-static void handleWorkspaceInput(WorkspaceData *workspaceData, int *cursor,
-                                 int ch) {
+static void handleWorkspaceInput(Focus *focus, WorkspaceData *workspaceData,
+                                 int *cursor, int *taskCursor, int ch) {
   switch (ch) {
   case 'k':
     moveUpWorkspace(workspaceData, cursor);
+    *taskCursor = 0;
     break;
   case 'j':
     moveDownWorkspace(workspaceData, cursor);
+    *taskCursor = 0;
     break;
   case 'a':
     appendWorkspace(workspaceData, cursor);
+    *focus = FOCUS_TASKS;
+    *taskCursor = 0;
     // writeFile(taskData->head);
     break;
   }
@@ -95,7 +99,9 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
       handleTaskInput(&app->workspaceData.currentWorkspace->taskData,
                       &app->tasksPanel.cursor, ch);
     } else {
-      handleWorkspaceInput(&app->workspaceData, &app->sidebarPanel.cursor, ch);
+      handleWorkspaceInput(&app->activeFocus, &app->workspaceData,
+                           &app->sidebarPanel.cursor, &app->tasksPanel.cursor,
+                           ch);
     }
   }
 }
