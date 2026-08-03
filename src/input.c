@@ -90,7 +90,7 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
     app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
     app->workspaceData.currentWorkspace->taskData.currentNode =
         app->workspaceData.currentWorkspace->taskData.head->next;
-    renderUI(app);
+    renderUI(app,app->tasksPanel.win);
   case KEY_RESIZE:
     resizeterm(0, 0);
     clear();
