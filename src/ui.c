@@ -82,6 +82,8 @@ void initUI(void) {
   noecho();             // Hide user input
   keypad(stdscr, TRUE); // Enable keypad
   curs_set(0);          // Hide cursor
+  start_color();        // For colors
+  use_default_colors(); // -
 }
 
 /*---Manage windows and panels---*/
