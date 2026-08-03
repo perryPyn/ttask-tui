@@ -71,7 +71,7 @@ static void handleWorkspaceInput(Focus *focus, WorkspaceData *workspaceData,
     appendWorkspace(workspaceData, cursor);
     *focus = FOCUS_TASKS;
     *taskCursor = 0;
-    // writeFile(taskData->head);
+    writeFile(workspaceData->headWorkspace);
     break;
   case 'x':
     removeWorkspace(workspaceData, cursor);
@@ -80,6 +80,9 @@ static void handleWorkspaceInput(Focus *focus, WorkspaceData *workspaceData,
 
 void handleInput(AppState *app, WINDOW *activeWin, int ch) {
   switch (ch) {
+  case 'r':
+    loadFile(&app->workspaceData);
+    renderUI(app);
   case KEY_RESIZE:
     resizeterm(0, 0);
     clear();
