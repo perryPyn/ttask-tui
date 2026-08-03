@@ -4,6 +4,7 @@
 #include "node.h"
 #include "types.h"
 #include "ui.h"
+#include "workspaceNode.h"
 #include <ncurses.h>
 
 static void setup(AppState *app) {
@@ -12,9 +13,15 @@ static void setup(AppState *app) {
   app->isRunning = true;
   app->activeFocus = FOCUS_TASKS;
 
-  app->taskData.head = createNode(&(Task){0, 0, "Head"});
-  app->taskData.length = loadFile(app->taskData.head) - 1;
-  app->taskData.currentNode = app->taskData.head->next;
+  TaskData taskData = {.head = createNode(&(Task){0, 0, "Head"}),
+                       .currentNode = NULL,
+                       .length = 0};
+
+  app->workspaceData.headWorkspace = createWorkspace("Default", &taskData);
+  app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
+  app->workspaceData.length = 1;
+
+  loadFile(&app->workspaceData);
 
   initWin(app);
   app->tasksPanel.cursor = 0;
@@ -31,9 +38,9 @@ static void loop(AppState *app) {
   handleInput(app, activeWin, ch);
 }
 
-static void cleanup(TaskData *taskData) {
+static void cleanup(WorkspaceNode *headWorkspace) {
   msgLog("[INFO] Saving file and stopping process...\n");
-  writeFile(taskData->head);
+  writeFile(headWorkspace);
   endwin();
 }
 
@@ -46,7 +53,7 @@ int main() {
     loop(&app);
   }
 
-  cleanup(&app.taskData);
+  cleanup(app.workspaceData.headWorkspace);
 
   return 0;
 }

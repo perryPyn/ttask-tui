@@ -5,6 +5,7 @@
 
 /*---Macro---*/
 #define TITLE_LENGTH 32
+#define NAME_LENGTH 16
 #define TABLE_LENGTH 256
 
 /*--Enum---*/
@@ -45,12 +46,25 @@ typedef struct {
   int length;
 } TaskData;
 
+typedef struct WorkspaceNode{
+  char name[16];
+  TaskData taskData;
+  struct WorkspaceNode *previous;
+  struct WorkspaceNode *next;
+} WorkspaceNode;
+
+typedef struct {
+  WorkspaceNode *headWorkspace;
+  WorkspaceNode *currentWorkspace;
+  int length;
+} WorkspaceData;
+
 typedef struct {
   bool isRunning;
   Focus activeFocus;
   Panel sidebarPanel;
   Panel tasksPanel;
-  TaskData taskData;
+  WorkspaceData workspaceData;
 } AppState;
 
 #endif // !TYPES_H

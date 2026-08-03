@@ -19,20 +19,25 @@ Node *createNode(Task *task) {
 }
 
 void addNode(Task *task, Node *nodeToTarget) {
-  // Creation of the new node
+  if (nodeToTarget == NULL || task == NULL) {
+    msgLog("[WARN] Cannot add node: target or task is NULL\n");
+    return;
+  }
+
   Node *node = createNode(task);
+  if (node == NULL) {
+    msgLog("[CRIT] Memory allocation failed for new node\n");
+    return;
+  }
 
   node->previous = nodeToTarget;
   node->next = nodeToTarget->next;
 
-  // If placed at the top
   if (nodeToTarget->next != NULL) {
     nodeToTarget->next->previous = node;
   }
-  // If placed at the bottom
-  if (nodeToTarget != NULL) {
-    nodeToTarget->next = node;
-  }
+
+  nodeToTarget->next = node;
 }
 
 Node *appendNode(Task *task, Node *previousNode) {
