@@ -82,8 +82,14 @@ void initUI(void) {
   noecho();             // Hide user input
   keypad(stdscr, TRUE); // Enable keypad
   curs_set(0);          // Hide cursor
-  start_color();        // For colors
-  use_default_colors(); // -
+  if (has_colors()) {   // For colors :
+    start_color();
+    use_default_colors();
+
+    init_pair(1, COLOR_WHITE, -1);
+    init_pair(2, COLOR_RED, -1);
+    init_pair(3, COLOR_GREEN, -1);
+  }
 }
 
 /*---Manage windows and panels---*/
@@ -146,9 +152,11 @@ static void renderTasks(Panel *panel, TaskData *taskData) {
   wnoutrefresh(panel->content);
 }
 
-void renderUI(AppState *app) {
+void renderUI(AppState *app, WINDOW *activeWindow) {
+  wattron(activeWindow, COLOR_PAIR(2) | A_BOLD);
   renderSidebar(&app->sidebarPanel, &app->workspaceData);
   renderTasks(&app->tasksPanel, &app->workspaceData.currentWorkspace->taskData);
+  wattroff(activeWindow, COLOR_PAIR(1) | A_BOLD);
 
   doupdate();
 }

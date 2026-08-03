@@ -28,14 +28,14 @@ static void setup(AppState *app) {
 }
 
 static void loop(AppState *app) {
-  renderUI(app);
+  Panel *activePanel = (app->activeFocus == FOCUS_TASKS)
+                          ? &app->tasksPanel
+                          : &app->sidebarPanel;
 
-  WINDOW *activeWin = (app->activeFocus == FOCUS_TASKS)
-                          ? app->tasksPanel.content
-                          : app->sidebarPanel.content;
+  renderUI(app, activePanel->win);
 
-  int ch = wgetch(activeWin);
-  handleInput(app, activeWin, ch);
+  int ch = wgetch(activePanel->content);
+  handleInput(app, activePanel->content, ch);
 }
 
 static void cleanup(WorkspaceNode *headWorkspace) {
