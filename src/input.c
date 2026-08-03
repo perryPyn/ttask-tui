@@ -65,10 +65,14 @@ static void handleWorkspaceInput(Focus *focus, WorkspaceData *workspaceData,
   case 'k':
     moveUpWorkspace(workspaceData, cursor);
     *taskCursor = 0;
+    workspaceData->currentWorkspace->taskData.currentNode =
+        workspaceData->currentWorkspace->taskData.head->next;
     break;
   case 'j':
     moveDownWorkspace(workspaceData, cursor);
     *taskCursor = 0;
+    workspaceData->currentWorkspace->taskData.currentNode =
+        workspaceData->currentWorkspace->taskData.head->next;
     break;
   case 'a':
     appendWorkspace(workspaceData, cursor);
@@ -90,7 +94,7 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
     app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
     app->workspaceData.currentWorkspace->taskData.currentNode =
         app->workspaceData.currentWorkspace->taskData.head->next;
-    renderUI(app,app->tasksPanel.win);
+    renderUI(app, app->tasksPanel.win);
   case KEY_RESIZE:
     resizeterm(0, 0);
     clear();

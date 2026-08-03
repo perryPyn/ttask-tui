@@ -4,7 +4,7 @@
 #include <ncurses.h>
 
 /*---Macro---*/
-#define TITLE_LENGTH 32
+#define TITLE_LENGTH 64
 #define NAME_LENGTH 16
 #define TABLE_LENGTH 256
 
@@ -46,7 +46,7 @@ typedef struct {
   int length;
 } TaskData;
 
-typedef struct WorkspaceNode{
+typedef struct WorkspaceNode {
   char name[16];
   TaskData taskData;
   struct WorkspaceNode *previous;
