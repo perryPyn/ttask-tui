@@ -16,7 +16,7 @@ void appendTask(TaskData *taskData, int *cursor) {
     taskData->currentNode = taskData->head;
   }
 
-  // reating
+  // Creating
   int height, width;
   getmaxyx(stdscr, height, width);
   int starty = (1 - 0.3) * height / 2, startx = (1 - 0.7) * width / 2;
@@ -102,4 +102,41 @@ void moveDown(TaskData *taskData, int *cursor) {
     taskData->currentNode = taskData->currentNode->next;
     (*cursor)++;
   }
+}
+
+void renameTask(char title[TITLE_LENGTH]) {
+
+  // Creating typing window
+  int height, width;
+  getmaxyx(stdscr, height, width);
+  int starty = (1 - 0.3) * height / 2, startx = (1 - 0.7) * width / 2;
+  height *= 0.3;
+  width *= 0.7;
+
+  WINDOW *win = newwin(height, width, starty, startx);
+  WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
+  drawRoundedBox(win, "New Title");
+  wnoutrefresh(win);
+  wnoutrefresh(content);
+  doupdate();
+
+  echo();
+  curs_set(1);
+  nodelay(content, FALSE);
+
+  char newTitle[TITLE_LENGTH] = "";
+  flushinp();
+  int res = wgetnstr(content, newTitle, TITLE_LENGTH - 1);
+
+  noecho();
+  curs_set(0);
+  delwin(content);
+  delwin(win);
+
+  if (res == ERR) {
+    return;
+  }
+
+  // Changing the title
+  cpyStr(title, newTitle, TITLE_LENGTH);
 }
