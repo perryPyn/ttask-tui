@@ -16,7 +16,7 @@ void appendTask(TaskData *taskData, int *cursor) {
     taskData->currentNode = taskData->head;
   }
 
-  // Creating typing window
+  // reating
   int height, width;
   getmaxyx(stdscr, height, width);
   int starty = (1 - 0.3) * height / 2, startx = (1 - 0.7) * width / 2;

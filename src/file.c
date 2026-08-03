@@ -40,23 +40,21 @@ int loadFile(WorkspaceData *workspaceData) {
     linesRead++;
     line[strcspn(line, "\r\n")] = '\0';
 
-    if (line[0] == '#') { // Ligne de workspace
+    if (line[0] == '#') {
       char name[TITLE_LENGTH];
       cpyStr(name, &line[2], TITLE_LENGTH);
 
       if (isFirstWorkspace && currentWorkspace != NULL) {
-        // Met à jour le workspace par défaut
         strcpy(currentWorkspace->name, name);
         isFirstWorkspace = false;
       } else {
-        // Nouveau workspace
         Node *newHead = createNode(&(Task){0, 0, "Head"});
-        TaskData taskData = {.head = newHead, .currentNode = NULL, .length = 0};
+        TaskData taskData = {newHead, NULL, 0};
         currentWorkspace = appendWorkspaceNode(name, &taskData, currentWorkspace);
         workspaceData->length++;
         previousNode = newHead;
       }
-    } else { // Ligne de tâche
+    } else {
       int indentation = 0;
       while (line[indentation] == ' ') {
         indentation++;
@@ -70,7 +68,6 @@ int loadFile(WorkspaceData *workspaceData) {
 
         previousNode = appendNode(&task, previousNode);
 
-        // Mise à jour de la taille des tâches pour ce workspace
         if (currentWorkspace) {
           currentWorkspace->taskData.length++;
         }
@@ -80,7 +77,6 @@ int loadFile(WorkspaceData *workspaceData) {
 
   fclose(fptr);
 
-  // Post-traitement : repositionner currentNode sur la première vraie tâche de chaque workspace
   WorkspaceNode *ws = workspaceData->headWorkspace;
   while (ws != NULL) {
     ws->taskData.currentNode = ws->taskData.head->next;

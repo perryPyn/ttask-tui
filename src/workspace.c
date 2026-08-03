@@ -1,9 +1,11 @@
 #include "workspace.h"
+#include "log.h"
 #include "node.h"
 #include "types.h"
 #include "utils.h"
 #include "workspaceNode.h"
 #include <ncurses.h>
+#include <stdio.h>
 
 void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
   // Creating new window for typing
@@ -42,6 +44,34 @@ void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
   workspaceData->length += 1;
   (*cursor)++;
   workspaceData->currentWorkspace = workspaceData->currentWorkspace->next;
+}
+
+void removeWorkspace(WorkspaceData *workspaceData, int *cursor) {
+  if (workspaceData->currentWorkspace == NULL) {
+    msgLog("[WARN] current workspace is NULL");
+    return;
+  }
+  WorkspaceNode *toDelete = workspaceData->currentWorkspace;
+
+  if (toDelete->previous != NULL) { // Usual case
+    workspaceData->currentWorkspace = toDelete->previous;
+    workspaceData->length -= 1;
+    (*cursor)--;
+  } else if (toDelete->next != NULL) { // If it is the fisrt one
+    workspaceData->currentWorkspace = toDelete->next;
+    workspaceData->headWorkspace = toDelete->next;
+    workspaceData->length -= 1;
+  } else { // If workspace to delete is the last one, we create default
+    TaskData taskData = {.head = createNode(&(Task){0, 0, "Head"}),
+                         .currentNode = NULL,
+                         .length = 0};
+
+    workspaceData->headWorkspace = createWorkspace("Default", &taskData);
+    workspaceData->currentWorkspace = workspaceData->headWorkspace;
+    workspaceData->length = 1; // Just to be sure be shoud not be necessary
+  }
+
+  removeWorkspaceNode(toDelete);
 }
 
 void moveUpWorkspace(WorkspaceData *workspaceData, int *cursor) {

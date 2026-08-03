@@ -73,6 +73,8 @@ static void handleWorkspaceInput(Focus *focus, WorkspaceData *workspaceData,
     *taskCursor = 0;
     // writeFile(taskData->head);
     break;
+  case 'x':
+    removeWorkspace(workspaceData, cursor);
   }
 }
 
