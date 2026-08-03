@@ -53,6 +53,9 @@ static void handleTaskInput(WorkspaceNode *workspaceHead, TaskData *taskData,
     writeFile(workspaceHead);
     break;
   }
+  case 'm':
+    renameTask(taskData->currentNode->task.title);
+    writeFile(workspaceHead);
   }
 }
 
@@ -82,6 +85,11 @@ void handleInput(AppState *app, WINDOW *activeWin, int ch) {
   switch (ch) {
   case 'r':
     loadFile(&app->workspaceData);
+    app->tasksPanel.cursor = 0;
+    app->sidebarPanel.cursor = 0;
+    app->workspaceData.currentWorkspace = app->workspaceData.headWorkspace;
+    app->workspaceData.currentWorkspace->taskData.currentNode =
+        app->workspaceData.currentWorkspace->taskData.head->next;
     renderUI(app);
   case KEY_RESIZE:
     resizeterm(0, 0);
