@@ -4,9 +4,15 @@
 #include <ncurses.h>
 
 /*---Macro---*/
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 #define TITLE_LENGTH 64
 #define NAME_LENGTH 16
 #define TABLE_LENGTH 256
+
+#define MAX_TITLE_LENGTH 63
+#define MAX_NAME_LENGTH 15
 
 /*--Enum---*/
 typedef enum {
