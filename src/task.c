@@ -51,7 +51,7 @@ void appendTask(TaskData *taskData, int *cursor) {
   }
 
   // Creating new node
-  Task task = {0, 0, ""};
+  Task task = {0, 0, 0, ""};
   cpyStr(task.title, title, TITLE_LENGTH);
   addNode(&task, taskData->currentNode);
 
@@ -101,6 +101,24 @@ void moveDown(TaskData *taskData, int *cursor) {
   if (taskData->currentNode->next != NULL) {
     taskData->currentNode = taskData->currentNode->next;
     (*cursor)++;
+  }
+}
+
+void increaseImportance(TaskData *taskData) {
+  if (taskData->currentNode == NULL) {
+    return;
+  }
+  if (taskData->currentNode->task.importance < 3) {
+    (taskData->currentNode->task.importance)++;
+  }
+}
+
+void decreaseImportance(TaskData *taskData) {
+  if (taskData->currentNode == NULL) {
+    return;
+  }
+  if (taskData->currentNode->task.importance > 0) {
+    (taskData->currentNode->task.importance)--;
   }
 }
 

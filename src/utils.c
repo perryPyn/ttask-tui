@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -39,9 +40,9 @@ void drawRoundedBox(WINDOW *win, const char title[]) {
   }
 }
 
-void checkDimmedParents(WINDOW *win, Node *node) {
+bool checkForDimmedParents(Node *node) {
   if (node == NULL)
-    return;
+    return false;
 
   int targetIndentation = node->task.indentation;
   Node *parentNode = node->previous;
@@ -50,8 +51,7 @@ void checkDimmedParents(WINDOW *win, Node *node) {
     if (parentNode->task.indentation < targetIndentation) {
       if (parentNode->task.status == TASK_DONE ||
           parentNode->task.status == TASK_ON_HOLD) {
-        wattron(win, A_DIM);
-        return;
+        return true;
       }
       targetIndentation = parentNode->task.indentation;
 
@@ -61,4 +61,5 @@ void checkDimmedParents(WINDOW *win, Node *node) {
     }
     parentNode = parentNode->previous;
   }
+  return false;
 }

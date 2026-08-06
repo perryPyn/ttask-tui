@@ -23,6 +23,7 @@ typedef enum { FOCUS_TASKS, FOCUS_SIDEBAR } Focus;
 typedef struct {
   int indentation;
   int status;
+  int importance;
   char title[TITLE_LENGTH];
   // char description[512];
 } Task;
