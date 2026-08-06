@@ -12,6 +12,36 @@ void cpyStr(char *dest, const char *src, int charLength) {
   dest[len] = '\0';
 }
 
+bool promptString(const char *boxTitle, char *outStr, size_t maxLen) {
+  int height, width;
+  getmaxyx(stdscr, height, width);
+  int starty = (1 - 0.3) * height / 2;
+  int startx = (1 - 0.7) * width / 2;
+  height *= 0.3;
+  width *= 0.7;
+
+  WINDOW *win = newwin(height, width, starty, startx);
+  WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
+  drawRoundedBox(win, boxTitle);
+  wnoutrefresh(win);
+  wnoutrefresh(content);
+  doupdate();
+
+  echo();
+  curs_set(1);
+  nodelay(content, FALSE);
+
+  flushinp();
+  int res = wgetnstr(content, outStr, maxLen - 1);
+
+  noecho();
+  curs_set(0);
+  delwin(content);
+  delwin(win);
+
+  return (res != ERR && strlen(outStr) > 0);
+}
+
 void drawRoundedBox(WINDOW *win, const char title[]) {
   int height, width;
   getmaxyx(win, height, width);

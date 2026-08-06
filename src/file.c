@@ -1,7 +1,6 @@
 #include "file.h"
 #include "log.h"
 #include "node.h"
-#include "types.h"
 #include "utils.h"
 #include "workspaceNode.h"
 #include <ncurses.h>

@@ -1,49 +1,36 @@
 #include "workspace.h"
 #include "log.h"
 #include "node.h"
-#include "types.h"
 #include "utils.h"
 #include "workspaceNode.h"
 #include <ncurses.h>
 #include <stdio.h>
 
 void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
-  // Creating new window for typing
-  int height, width;
-  getmaxyx(stdscr, height, width);
-  int starty = (1 - 0.3) * height / 2, startx = (1 - 0.7) * width / 2;
-  height *= 0.3;
-  width *= 0.7;
-  WINDOW *win = newwin(height, width, starty, startx);
-  WINDOW *content = derwin(win, height - 2, width - 2, 1, 1);
-  drawRoundedBox(win, "New Workspace");
-  wnoutrefresh(win);
-  wnoutrefresh(content);
-  doupdate();
+  if (workspaceData == NULL) return;
 
-  echo();      // Restoring vision of the user input
-  curs_set(1); // Show cursor
+  char name[NAME_LENGTH] = "";
+  if (!promptString("New Workspace", name, NAME_LENGTH)) {
+    return;
+  }
 
-  char name[NAME_LENGTH];
-  // Get user input
-  flushinp();
-  wgetnstr(content, name, TITLE_LENGTH - 1);
-
-  noecho();
-  curs_set(0);
-
-  delwin(content);
-  delwin(win);
-
-  // Creating the workspace
   Node *newHead = createNode(&(Task){0, 0, 0, "Head"});
+  if (newHead == NULL) return;
 
-  TaskData taskData = {newHead, newHead->next, 0};
+  TaskData taskData = {
+      .head = newHead,
+      .currentNode = NULL,
+      .length = 0
+  };
+
   addWorkspaceNode(name, &taskData, workspaceData->currentWorkspace);
 
-  workspaceData->length += 1;
-  (*cursor)++;
-  workspaceData->currentWorkspace = workspaceData->currentWorkspace->next;
+  workspaceData->length++;
+  if (cursor) (*cursor)++;
+
+  if (workspaceData->currentWorkspace != NULL) {
+    workspaceData->currentWorkspace = workspaceData->currentWorkspace->next;
+  }
 }
 
 void removeWorkspace(WorkspaceData *workspaceData, int *cursor) {
