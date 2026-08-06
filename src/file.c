@@ -43,8 +43,8 @@ int loadFile(WorkspaceData *workspaceData, char *filePath) {
     line[strcspn(line, "\r\n")] = '\0';
 
     if (line[0] == '#') {
-      char name[TITLE_LENGTH];
-      cpyStr(name, &line[2], TITLE_LENGTH);
+      char name[NAME_LENGTH];
+      sscanf(line, "# %" STR(MAX_NAME_LENGTH) "[^\n]", name);
 
       if (isFirstWorkspace && currentWorkspace != NULL) {
         strcpy(currentWorkspace->name, name);
@@ -59,15 +59,20 @@ int loadFile(WorkspaceData *workspaceData, char *filePath) {
       }
     } else {
       int indentation = 0;
-      while (line[indentation] == ' ') {
-        indentation++;
-      }
+      int importance;
+      char statusChar;
+      char title[TITLE_LENGTH];
 
-      if (strlen(line) >= (size_t)(6 + indentation) &&
-          line[indentation] == '-' && line[indentation + 2] == '[') {
+      if (sscanf(line, " %n- [%c] %" STR(MAX_TITLE_LENGTH) "[^|] | %d",
+                 &indentation, &statusChar, title, &importance) == 3) {
 
-        Task task = {indentation, statusFromChar(line[3 + indentation]), 0, ""};
-        cpyStr(task.title, &line[6 + indentation], TITLE_LENGTH);
+        size_t len = strlen(title);
+        while (len > 0 && title[len - 1] == ' ') {
+          title[--len] = '\0';
+        }
+
+        Task task = {indentation, statusFromChar(statusChar), importance, ""};
+        cpyStr(task.title, title, TITLE_LENGTH);
 
         previousNode = appendNode(&task, previousNode);
 
@@ -109,8 +114,9 @@ void writeFile(WorkspaceNode *WorkspaceHead, char *filePath) {
     Node *node = workspaceNode->taskData.head;
     while (node->next != NULL) {
       node = node->next; // At the start to skip head
-      fprintf(fptr, "%*s- [%s] %s\n", node->task.indentation, "",
-              STATUS_SYMBOLS[node->task.status], node->task.title);
+      fprintf(fptr, "%*s- [%s] %s | %d\n", node->task.indentation, "",
+              STATUS_SYMBOLS[node->task.status], node->task.title,
+              node->task.importance);
     }
     workspaceNode = workspaceNode->next; // At the end to not skip Default
   }
