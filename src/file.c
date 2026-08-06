@@ -64,7 +64,7 @@ int loadFile(WorkspaceData *workspaceData, char *filePath) {
       char title[TITLE_LENGTH];
 
       if (sscanf(line, " %n- [%c] %" STR(MAX_TITLE_LENGTH) "[^|] | %d",
-                 &indentation, &statusChar, title, &importance) == 3) {
+                 &indentation, &statusChar, title, &importance) == 3) { // /!\ ==3 bc %n does not count
 
         size_t len = strlen(title);
         while (len > 0 && title[len - 1] == ' ') {
