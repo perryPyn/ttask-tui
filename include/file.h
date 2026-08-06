@@ -4,8 +4,8 @@
 #include "types.h"
 #include <threads.h>
 
-int loadFile(WorkspaceData *workspaceData);
-void writeFile(WorkspaceNode *WorkspaceHead);
+int loadFile(WorkspaceData *workspaceData, char *filePath);
+void writeFile(WorkspaceNode *WorkspaceHead, char *filePath);
 void printTaskTable(Node *head);
 
 #endif // !FILE_H

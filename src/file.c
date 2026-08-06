@@ -23,17 +23,19 @@ static TaskStatus statusFromChar(char c) {
   return TASK_TODO;
 }
 
-int loadFile(WorkspaceData *workspaceData) {
-  FILE *fptr = fopen("file.md", "r");
+int loadFile(WorkspaceData *workspaceData, char *filePath) {
+  FILE *fptr = fopen(filePath, "r");
   if (fptr == NULL) {
-    msgLog("[CRIT] file.md failed to open.\n");
+    msgLog("[CRIT] Failed to open task.md at %s\n", filePath);
     return 0;
   }
+  msgLog("[INFO] Opened task.md at %s\n", filePath);
 
   char line[256];
   int linesRead = 0;
   WorkspaceNode *currentWorkspace = workspaceData->headWorkspace;
-  Node *previousNode = currentWorkspace ? currentWorkspace->taskData.head : NULL;
+  Node *previousNode =
+      currentWorkspace ? currentWorkspace->taskData.head : NULL;
   bool isFirstWorkspace = true;
 
   while (fgets(line, sizeof(line), fptr) != NULL) {
@@ -48,9 +50,10 @@ int loadFile(WorkspaceData *workspaceData) {
         strcpy(currentWorkspace->name, name);
         isFirstWorkspace = false;
       } else {
-        Node *newHead = createNode(&(Task){0, 0, "Head"});
+        Node *newHead = createNode(&(Task){0, 0, 0, "Head"});
         TaskData taskData = {newHead, NULL, 0};
-        currentWorkspace = appendWorkspaceNode(name, &taskData, currentWorkspace);
+        currentWorkspace =
+            appendWorkspaceNode(name, &taskData, currentWorkspace);
         workspaceData->length++;
         previousNode = newHead;
       }
@@ -63,7 +66,7 @@ int loadFile(WorkspaceData *workspaceData) {
       if (strlen(line) >= (size_t)(6 + indentation) &&
           line[indentation] == '-' && line[indentation + 2] == '[') {
 
-        Task task = {indentation, statusFromChar(line[3 + indentation]), ""};
+        Task task = {indentation, statusFromChar(line[3 + indentation]), 0, ""};
         cpyStr(task.title, &line[6 + indentation], TITLE_LENGTH);
 
         previousNode = appendNode(&task, previousNode);
@@ -86,19 +89,19 @@ int loadFile(WorkspaceData *workspaceData) {
   return linesRead;
 }
 
-void writeFile(WorkspaceNode *WorkspaceHead) {
+void writeFile(WorkspaceNode *WorkspaceHead, char *filePath) {
   if (WorkspaceHead == NULL) {
     msgLog("[WARN] No workspaces to save.\n");
     return;
   }
   FILE *fptr;
 
-  fptr = fopen("file.md", "w");
+  fptr = fopen(filePath, "w");
   if (fptr == NULL) {
-    msgLog("[CRIT] file.md file failed to open.\n");
+    msgLog("[CRIT] File failed to open at %s\n", filePath);
     exit(0);
   }
-  msgLog("[INFO] The file is ready for rewriting\n");
+  // msgLog("[INFO] The file is ready for rewriting\n");
 
   WorkspaceNode *workspaceNode = WorkspaceHead;
   while (workspaceNode != NULL) {
@@ -113,7 +116,7 @@ void writeFile(WorkspaceNode *WorkspaceHead) {
   }
 
   fclose(fptr);
-  msgLog("[INFO] Closing rewritten file.\n");
+  // msgLog("[INFO] Rewritten file at %s\n", filePath);
 }
 
 void printTaskTable(Node *head) {

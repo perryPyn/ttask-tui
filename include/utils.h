@@ -6,6 +6,6 @@
 
 void cpyStr(char *dest, const char *src, int charLength);
 void drawRoundedBox(WINDOW *win, const char title[]);
-void checkDimmedParents(WINDOW *win, Node *node);
+bool checkForDimmedParents(Node *node);
 
 #endif // !UTILS_H

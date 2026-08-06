@@ -36,7 +36,7 @@ void appendWorkspace(WorkspaceData *workspaceData, int *cursor) {
   delwin(win);
 
   // Creating the workspace
-  Node *newHead = createNode(&(Task){0, 0, "Head"});
+  Node *newHead = createNode(&(Task){0, 0, 0, "Head"});
 
   TaskData taskData = {newHead, newHead->next, 0};
   addWorkspaceNode(name, &taskData, workspaceData->currentWorkspace);
@@ -62,7 +62,7 @@ void removeWorkspace(WorkspaceData *workspaceData, int *cursor) {
     workspaceData->headWorkspace = toDelete->next;
     workspaceData->length -= 1;
   } else { // If workspace to delete is the last one, we create default
-    TaskData taskData = {.head = createNode(&(Task){0, 0, "Head"}),
+    TaskData taskData = {.head = createNode(&(Task){0, 0, 0, "Head"}),
                          .currentNode = NULL,
                          .length = 0};
 

@@ -4,6 +4,6 @@
 #include "types.h"
 #include <ncurses.h>
 
-void handleInput(AppState *app, WINDOW *activeWin, int ch);
+void handleInput(AppState *app, char *filePath, WINDOW *activeWin, int ch);
 
 #endif // !INPUT_H

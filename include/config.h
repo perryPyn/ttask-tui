@@ -6,4 +6,6 @@ typedef struct {
   char filePath[512];
 }AppConfig;
 
+AppConfig initConfig();
+
 #endif // !CONFIG_H
