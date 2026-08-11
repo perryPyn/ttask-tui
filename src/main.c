@@ -7,6 +7,14 @@
 #include "ui.h"
 #include "workspaceNode.h"
 #include <ncurses.h>
+#include <signal.h>
+
+static volatile sig_atomic_t keepRunning = 1;
+
+static void handleSignal(int sig) {
+  (void)sig;
+  keepRunning = 0;
+}
 
 static void setup(AppState *app, AppConfig *config) {
   app->isRunning = true;
@@ -32,7 +40,16 @@ static void loop(AppState *app, AppConfig *config) {
 
   renderUI(app, activePanel->win);
 
+  // Allow sleep if no new entries
+  nodelay(activePanel->content, FALSE);
   int ch = wgetch(activePanel->content);
+
+  // If terminal closed
+  if (ch == ERR && (feof(stdin) || ferror(stdin))) {
+    app->isRunning = false; // <-- CRITIQUE : stoppe la boucle du main
+    return;
+  }
+
   handleInput(app, config->filePath, activePanel->content, ch);
 }
 
@@ -43,16 +60,20 @@ static void cleanup(char *filePath, WorkspaceNode *headWorkspace) {
   endwin();
 }
 
-int main() {
+int main(void) {
   msgLog("\n\n\n\n\n[INFO] Starting new process...\n");
+
+  signal(SIGHUP, handleSignal);
+  signal(SIGINT, handleSignal);
+  signal(SIGTERM, handleSignal);
+
   initUI();
 
   AppConfig config = initConfig();
-
   AppState app = {0};
   setup(&app, &config);
 
-  while (app.isRunning) {
+  while (app.isRunning && keepRunning) {
     loop(&app, &config);
   }
 

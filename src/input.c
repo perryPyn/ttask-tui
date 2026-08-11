@@ -64,6 +64,7 @@ static void handleTaskInput(char *filePath, WorkspaceNode *workspaceHead,
   case 'm':
     renameTask(taskData->currentNode->task.title);
     writeFile(workspaceHead, filePath);
+    break;
   }
 }
 
@@ -91,6 +92,11 @@ static void handleWorkspaceInput(char *filePath, Focus *focus,
     break;
   case 'x':
     removeWorkspace(workspaceData, cursor);
+    break;
+  case 'm':
+    renameTask(workspaceData->currentWorkspace->name);
+    writeFile(workspaceData->headWorkspace, filePath);
+    break;
   }
 }
 
@@ -104,6 +110,7 @@ void handleInput(AppState *app, char *filePath, WINDOW *activeWin, int ch) {
     app->workspaceData.currentWorkspace->taskData.currentNode =
         app->workspaceData.currentWorkspace->taskData.head->next;
     renderUI(app, app->tasksPanel.win);
+    break;
   case KEY_RESIZE:
     resizeterm(0, 0);
     clear();
