@@ -71,7 +71,7 @@ static void displayNodeTable(WINDOW *win, Node *head, int cursor) {
 
     // Check if a parent is marked as DONE or ON_HOLD
     if (checkForDimmedParents(node)) {
-      flags |= COLOR_PAIR(1);
+      flags = (flags & ~A_COLOR) | COLOR_PAIR(1);
     }
 
     wattrset(win, flags);
@@ -106,7 +106,7 @@ void initUI(void) {
     start_color();
     use_default_colors();
 
-    // Skipi 0-15 for ANSI colors
+    // Skips 0-15 for ANSI colors
     init_pair(1, 16, -1); // Gray
     init_pair(2, 17, -1); // Red
     init_pair(3, 18, -1); // Yellow
